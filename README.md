@@ -10,6 +10,8 @@ A distributable, storage-neutral journaling skill for ChatGPT and compatible ski
 
 ## Table of contents
 
+- [Informed first-use setup](#informed-first-use-setup)
+
 - [Overview](#overview)
 - [Capabilities](#capabilities)
 - [Projects are optional](#projects-are-optional)
@@ -224,3 +226,9 @@ The plugin contains no journal data and runs no background collection. It preser
 ## License and provenance
 
 CC BY-SA 4.0, retaining attribution to Sunny Patneedi's Claude Starter Kit and the local journaling adaptation. [NOTICE.md](NOTICE.md) records changes and source-file hashes; [LICENSE](LICENSE) identifies the terms. No personal journal, medical history, private record IDs, or account configuration is included. User-created journals are not licensed by this package.
+
+## Informed first-use setup
+
+The skill explicitly asks for operational preferences before first journal-history retrieval or saving, after explaining capabilities, limitations, benefits and drawbacks. Project choices are: no preferred project, a preferred project for organization while remaining usable elsewhere, or a required project with the disclosed limits of behavioral enforcement. Storage selection is separate and covers actual full-record, local, single-record, summary-memory, retained-chat or unsaved options. The plugin-count defaults are recommendations the user accepts or overrides, not silent choices.
+
+Setup records the selected journal, project preference, backend, saving behavior and manual/disabled/automatic historical-import policy. It explains save timing and the absence of a guaranteed background import listener. Previously explicit choices are reused; only missing or materially changed preferences require questions. Users can say “show my journal settings,” “explain the modes,” or “change my journal setup.” Configuration is conversational and stored in authorized journal storage where possible; there is no custom installer, native settings panel, or permission toggle. Configuration writes do not save unfinished journal content or authorize historical copying/deletion. Unverified preference persistence is disclosed.

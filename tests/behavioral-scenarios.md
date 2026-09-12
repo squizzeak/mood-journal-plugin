@@ -56,3 +56,14 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 - Historical import outside projects: include only selected source IDs/ledger scope, preserve no-save boundaries, and report inaccessible history without account-wide expansion.
 
 - Project organization: keep ChatGPT project and backend collection locators separate from journal identity; renaming a project preserves the journal. Multiple journals within a project remain distinct. Project-scoped import excludes unrelated or unselected journal sources. No tool means no claim of native project creation/move.
+
+## Informed setup acceptance
+
+- First use: disclose scope and actual storage tradeoffs, then acquire explicit choices before sensitive history retrieval/save; suggested defaults or silence do not count as acceptance.
+- Existing user with explicit saved choices: reuse them without re-onboarding. Missing only import preference: ask only that choice.
+- One-off log before setup: retain supplied content pending choice; do not silently save it or ask the user to repeat it.
+- Explain project organization separately from restriction and backend location; required-project limitations and missing host identity are visible before selection.
+- Setup preference write during unfinished reflection: only authorized configuration is persisted; no unfinished health content or derived updates.
+- No-save or declined setup: settings remain session-only as appropriate; explicitly chosen unsaved support remains available.
+- Backend/mode fidelity changes: disclose affected tradeoffs and obtain changed preference; no silent downgrade, account transfer, or deletion consent.
+- Automatic import selection: acquire source/journal scope; no background-listener claim or automatic cleanup authorization.

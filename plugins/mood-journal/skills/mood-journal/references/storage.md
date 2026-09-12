@@ -2,6 +2,8 @@
 
 Honor an explicit user choice and retain the established canonical destination. For initial selection, apply the defaults below. Discover actual tool schemas rather than guessing APIs. No particular plugin, vendor, title, timezone, shell, or local directory is required. Availability is not authorization to copy health information to a new service. Read only relevant authorized context and never create test health records.
 
+Before initial selection, follow [setup.md](setup.md): disclose tradeoffs and explicitly acquire the user’s preferences. The defaults below are suggestions requiring acceptance when no prior explicit choice exists.
+
 ## Journal identity and optional project scope
 
 ChatGPT Projects are optional. Separate the identity of a journal from its conversation location and storage backend. Before first persistence, reuse the selected journal or create a stable opaque journal ID with a user-facing name. Save the ID in authorized private configuration and each new canonical record; never derive identity solely from a mutable project name, chat title, account email, or backend path. No particular ID-generation tool is required. If durable configuration cannot be written, put the identity in the retained dated entry and disclose that cross-chat selection cannot be independently verified.
@@ -36,7 +38,7 @@ An explicit choice or previously saved backend preference always wins; do not mo
 - Multiple capable plugins but no native persistence: present the capable destinations and ask the user to choose; do not select a service arbitrarily.
 - No capable storage plugins: use available native/local persistence with its actual limitations, or the explicit unsaved mode.
 
-Show the default briefly and allow an override without requiring repeated selection every session. A default is a proposed routing choice, not authorization to transfer old records or access a new account. Normal authorized journaling may use an established default; resolve any missing destination/account authorization before writing. Save the selected backend's stable provider/account/project/path identity and verification level in authorized private journal configuration when possible. Do not store credentials in that record. Allow “choose storage,” “use native storage,” and “switch my journal to…” at any time.
+Show the default with its capabilities and limitations, explicitly acquire acceptance or another choice at initial setup, and reuse it without requiring repeated selection every session. A default is a proposed routing choice, not authorization to transfer old records or access a new account. Normal authorized journaling may use an established default; resolve any missing destination/account authorization before writing. Save the selected backend's stable provider/account/project/path identity and verification level in authorized private journal configuration when possible. Do not store credentials in that record. Allow “choose storage,” “use native storage,” and “switch my journal to…” at any time.
 
 The following tiers describe capability strength within a selected backend and fallback options; they do not override the plugin-count defaults or a saved user choice. If the selected backend becomes unavailable, preserve pending work and disclose the failure. Do not silently write to another service or change the canonical backend.
 
