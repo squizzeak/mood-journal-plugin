@@ -1,6 +1,21 @@
 # Storage selection and graceful fallback
 
-Prefer the user's chosen destination; otherwise use an established journal store or the strongest authorized native persistent capability. Discover actual tool schemas rather than guessing APIs. No particular plugin, vendor, title, timezone, shell, or local directory is required. Availability is not authorization to copy health information to a new service. Read only relevant authorized context and never create test health records.
+Honor an explicit user choice and retain the established canonical destination. For initial selection, apply the defaults below. Discover actual tool schemas rather than guessing APIs. No particular plugin, vendor, title, timezone, shell, or local directory is required. Availability is not authorization to copy health information to a new service. Read only relevant authorized context and never create test health records.
+
+## Backend choice and defaults
+
+Inventory capable installed storage plugins and exposed native options, including native files, full memory records, summary memory, retained project conversations, and local project storage where available. Describe each option's actual persistence, completeness, read-back, and cross-device limits. Installation without usable authorized storage operations does not count as a capable plugin.
+
+An explicit choice or previously saved backend preference always wins; do not move an established journal merely because another plugin appears. With no established choice:
+
+- Exactly one capable storage plugin: default to that plugin, while allowing selection of any available native or other capable option.
+- Multiple capable storage plugins: default to native storage. Choose the strongest actually available native option and disclose if it only retains summaries or project conversation entries. Never imply native files exist when they do not.
+- Multiple capable plugins but no native persistence: present the capable destinations and ask the user to choose; do not select a service arbitrarily.
+- No capable storage plugins: use available native/local persistence with its actual limitations, or the explicit unsaved mode.
+
+Show the default briefly and allow an override without requiring repeated selection every session. A default is a proposed routing choice, not authorization to transfer old records or access a new account. Normal authorized journaling may use an established default; resolve any missing destination/account authorization before writing. Save the selected backend's stable provider/account/project/path identity and verification level in authorized private journal configuration when possible. Do not store credentials in that record. Allow “choose storage,” “use native storage,” and “switch my journal to…” at any time.
+
+The following tiers describe capability strength within a selected backend and fallback options; they do not override the plugin-count defaults or a saved user choice. If the selected backend becomes unavailable, preserve pending work and disclose the failure. Do not silently write to another service or change the canonical backend.
 
 ## Ordered capability tiers
 

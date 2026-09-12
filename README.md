@@ -64,7 +64,7 @@ Full entries use stable headings for session details, synthesized account, mood,
 | Single-file or single-record memory | Read/append dated blocks when full content fits; otherwise label compact summaries and keep full entries in retained project conversations. |
 | Retained project chat / temporary download | Retained chat can hold the entry with limited retrieval guarantees. A temporary download alone is not durable persistence. |
 
-An established destination is reused. Otherwise the skill prefers native project capabilities and discloses its mode; it never silently selects a new service for health records. Store journals outside the plugin/repository. Use the same authorized durable namespace across devices only after verifying those devices can access it. [Storage contract](plugins/mood-journal/skills/mood-journal/references/storage.md).
+An established destination is reused. Initially, the sole capable installed storage plugin is the default; with multiple capable plugins, an available native option is the default. Users may choose any capable native or plugin backend. If multiple plugins exist without native persistence, the skill asks for a destination. It discloses the selected mode; it never silently selects a new service for health records. Store journals outside the plugin/repository. Use the same authorized durable namespace across devices only after verifying those devices can access it. [Storage contract](plugins/mood-journal/skills/mood-journal/references/storage.md).
 
 ## Installation
 
@@ -112,6 +112,13 @@ After choosing the available storage mode, try:
 In hosts with `$` invocation, use `$mood-journal`. A session save request authorizes the agreed journal write; it does not authorize sending records to others. “Don't save this” is honored, while the host's independent chat-retention behavior remains outside the skill's control.
 
 ## Importing earlier chats and upgrading storage
+
+### Backend selection and migration
+
+Users can select any capable installed or native storage option. An established choice persists. Initially, one capable installed storage plugin is the default; multiple capable plugins default to native storage when available. If native persistence is unavailable, ask for a destination instead of picking a service arbitrarily. No plugins falls back to available native/local persistence. Defaults never invent file capabilities or authorize historical transfers.
+
+“Move my journal to [backend] and use it for future entries” migrates canonical records and switches routing after verification. Source disposition is selectable: retain (default), archive, or explicitly scoped deletion. Verify the destination and cutover before cleanup; never delete full originals after a lossy summary-memory/chat-only migration. Interrupted copies resume from the ledger; failed cleanup stays pending without reverting successful future-save routing. Unrelated/shared data is excluded. Native archival/deletion is offered only where real tools support it.
+
 
 Ask: “I have connected storage now. Import the earlier journal conversations in this project into it, preserving dates and sources.” The skill inventories accessible sources, replays sessions chronologically, and builds the same canonical journal entries, supported context revisions, inquiry records, and indexes that the live workflow would have maintained. It verifies each record and keeps an old-to-new locator ledger. Transcripts and a synthesis queue alone do not count as completion. Existing chats and memory remain intact. A partially migrated history stays explicitly partial. Installing the plugin alone never triggers migration. To opt in, say “Automatically migrate this project’s journal history when my chosen storage becomes available.” The skill records the scope/destination and checks on later session starts/resumes. It does not run while no conversation is active.
 

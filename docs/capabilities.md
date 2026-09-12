@@ -35,3 +35,9 @@ A completed historical import must resemble the normal live work product: the sa
 ## Automatic migration timing
 
 With a saved, scoped opt-in, capability detection at session start/resume or active tool refresh can initiate migration automatically. It checks the approved account/destination and source ledger, preserves originals, excludes unfinished sessions, and resumes verified progress. A new destination outside that authorization requires a new choice. There is no guaranteed cloud/mobile connector-install event or background listener in a skills-only package.
+
+## Backend selection and migration
+
+Users can select any capable installed or native storage option. An established choice persists. Initially, one capable installed storage plugin is the default; multiple capable plugins default to native storage when available. If native persistence is unavailable, ask for a destination instead of picking a service arbitrarily. No plugins falls back to available native/local persistence. Defaults never invent file capabilities or authorize historical transfers.
+
+“Move my journal to [backend] and use it for future entries” migrates canonical records and switches routing after verification. Source disposition is selectable: retain (default), archive, or explicitly scoped deletion. Verify the destination and cutover before cleanup; never delete full originals after a lossy summary-memory/chat-only migration. Interrupted copies resume from the ledger; failed cleanup stays pending without reverting successful future-save routing. Unrelated/shared data is excluded. Native archival/deletion is offered only where real tools support it.

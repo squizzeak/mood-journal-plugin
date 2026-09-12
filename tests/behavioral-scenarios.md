@@ -33,3 +33,14 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 | New storage detected with saved scoped automatic policy | Start/resume verified canonical migration without per-entry confirmation. |
 | New storage belongs to a different account | Do not auto-transfer; ask for destination authorization. |
 | Connector installed while no chat is active | No claimed background run; detect on the next skill invocation. |
+
+## Backend selection and migration acceptance
+
+- One usable plugin plus native options: default to the plugin, expose native override; an established native preference still wins.
+- Two usable plugins plus native retained chat: default to native, disclose lack of verified files, allow either plugin. No native persistence: request choice.
+- Selected backend fails: keep pending work and routing; no silent cross-service fallback.
+- Plugin A to B with retain/archive/delete choices: preserve canonical IDs/history, verify copy and routing before scoped cleanup; future saves target B once.
+- Concurrent source edit or interrupted copy: reconcile revisions and resume without duplicates; failed cutover leaves A canonical and unmodified.
+- Successful cutover but failed archive/delete: B stays canonical; report and retry only pending authorized cleanup.
+- Full files to native summary/chat: disclose partial fidelity, preserve originals, refuse to count lossy retention as grounds for source deletion.
+- Explicit bounded cleanup authorization requires no redundant confirmation; unspecified deletion targets require concrete scope first. Unrelated/shared records remain untouched.
