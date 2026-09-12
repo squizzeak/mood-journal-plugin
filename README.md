@@ -22,6 +22,7 @@ A single-agent, storage-neutral journaling skill for ChatGPT and compatible skil
 - [Projects are optional](#projects-are-optional)
 - [Storage and cross-device support](#storage-and-cross-device-support)
 - [Installation](#installation)
+- [Submitting to the OpenAI plugins directory](#submitting-to-the-openai-plugins-directory)
 - [Using the skill](#using-the-skill)
 - [Importing earlier chats and upgrading storage](#importing-earlier-chats-and-upgrading-storage)
 - [Repository layout](#repository-layout)
@@ -120,6 +121,17 @@ A workspace admin can import the repository using **Admin → Plugins → Add �
 ### Skill-only hosts
 
 Extract `skills.zip` and install its `mood-journal` directory using that host's supported skill installer. Keep the full directory: references, metadata, and notices are required. Do not overwrite another installed skill. Skill portability does not grant filesystem or memory permissions.
+
+## Submitting to the OpenAI plugins directory
+
+Track actual submission and reviewer follow-through in [issue #2](https://github.com/squizzeak/mood-journal-plugin/issues/2). The detailed [submission guide](submission/README.md) explains the skills-only route, artifact choices, required listing material and live acceptance evidence. Recheck the [official submission instructions](https://developers.openai.com/plugins/deploy/submission) and actual portal before submitting.
+
+1. Gather verified publisher identity/access, public website/support/privacy/terms URLs and country availability in issues [#7](https://github.com/squizzeak/mood-journal-plugin/issues/7), [#6](https://github.com/squizzeak/mood-journal-plugin/issues/6) and [#5](https://github.com/squizzeak/mood-journal-plugin/issues/5).
+2. Record real cloud/mobile/storage acceptance results in [#3](https://github.com/squizzeak/mood-journal-plugin/issues/3), and populate/review manifests, listing copy and submission worksheets in [#12](https://github.com/squizzeak/mood-journal-plugin/issues/12). Do not invent attestations or mark unrun tests complete.
+3. Once the materials are ready, generate and verify the exact submission artifacts using GitHub Actions in [#13](https://github.com/squizzeak/mood-journal-plugin/issues/13). Local artifacts suffice for development build testing; official release artifacts are not needed during information gathering.
+4. Complete accurate portal attestations, submit the accepted package format through the skills-only route, record the version and receipt/status, and track review feedback in #2. After approval, complete any publication step and verify the directory listing.
+
+GitHub has native blocked-by relationships between these tasks. A GitHub issue does not technically prevent someone from using the external submission portal; it records the required project sequencing. A public repository, local build, or GitHub release is not OpenAI approval.
 
 ## Using the skill
 

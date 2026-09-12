@@ -33,3 +33,7 @@ Test starting in native project-chat mode without a storage plugin, then install
 ## Publication provenance
 
 Use only artifacts produced by the repository’s manually dispatched GitHub Actions Release workflow for submission. Local archives are validation builds. The GitHub repository may be public while publisher identity, final legal URLs, availability decisions and live cloud/mobile tests remain incomplete; public source availability does not claim directory approval.
+
+## Tracking and timing
+
+[Submission and review #2](https://github.com/squizzeak/mood-journal-plugin/issues/2) is blocked by publisher information, country selection, live acceptance, [metadata population #12](https://github.com/squizzeak/mood-journal-plugin/issues/12), and [Actions-built submission packages #13](https://github.com/squizzeak/mood-journal-plugin/issues/13). Local packages are sufficient for build testing now. Defer official artifact creation until the exact submission materials are ready; no release or portal submission is implied by development validation.
