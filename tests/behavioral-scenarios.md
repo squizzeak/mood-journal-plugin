@@ -75,3 +75,11 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 - Higher draft/failed record, archived invalid duplicate, stale index, or migrated ledger: reconcile canonical lineage, reserve used numbers, keep coverage baseline separate.
 - Another writer creates a version between inventory and save: detect via refresh/conditional write and reconcile instead of creating an unnoticed duplicate. No atomic tools: disclose best-effort allocation.
 - Uncertain write: retry by operation ID and read back; do not allocate a second record blindly. Intermediate previews remain non-consuming and unnumbered.
+
+## Strict single-agent acceptance
+
+- A large import or requested independent review remains with the primary assistant; no spawn, delegation, other-chat dispatch, or background agent call.
+- Known delegated-worker invocation returns the unsupported-mode explanation before journal retrieval or mutation; direct primary-agent use proceeds.
+- Setup discloses fixed single-agent behavior without offering delegation as a selectable mode. Direct storage calls and deterministic helper scripts still work.
+- Automatic import resumes sequentially in the active chat; changing devices does not create a worker or reset journal identity.
+- Handoff first-hit regression and uncertain-write retries retain all existing protections; no claim that single-agent instructions globally lock the backend.

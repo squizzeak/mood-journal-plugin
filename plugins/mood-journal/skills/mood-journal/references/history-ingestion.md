@@ -2,6 +2,8 @@
 
 Activate when the user asks to import/backfill selected project or ordinary chats, reconstruct a journal, or migrate prior reflection into file storage. The request authorizes the specified historical import, independent of the explicit-close rule for a new live session. It does not authorize importing unrelated projects or sharing material elsewhere.
 
+The primary assistant performs extraction, chronological reconstruction, verification, and migration directly. Do not parallelize chats across sub-agents or create background workers; use the optional deterministic helpers or native tools directly.
+
 ## Discover and bound sources
 
 Resolve the stable target journal identity and apply its optional require-project policy before retrieval. A ChatGPT Project is not required. Outside projects, scope import to explicitly selected conversation IDs, supplied exports/transcripts, or an existing authorized journal-source ledger. Inside a project, project membership can bound the source inventory when the host exposes it. Do not treat all account history as one journal, infer membership from similar titles, or import another journal because its backend matches. Automatic import preferences must identify the journal and source scope; “this project” applies only when that project is established. If no exact source enumeration is exposed, use selected inputs and state partial coverage.

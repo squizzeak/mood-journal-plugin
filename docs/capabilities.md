@@ -65,3 +65,9 @@ Setup records the selected journal, project preference, backend, saving behavior
 ## Handoff version integrity
 
 Before a numbered handoff, the skill inventories the complete relevant series, including archived/reserved versions, and compares sequence numbers numerically. It must not branch from an old first search result: fictional v2 followed by a discovered v8 yields v9. Canonical parent, highest reserved number, and verified coverage baseline are tracked separately. Unresolved drafts, duplicate versions, missing lineage, or incomplete retrieval block authoritative numbering and leave coverage unchanged. The skill refreshes the inventory before writing, uses atomic allocation when available, and verifies the final record/index. Without atomic backend support, race prevention is best effort and is disclosed. An optional dependency-free inventory checker and fictional regression tests exercise selection; no Python runtime is required for native skill use.
+
+## Single-agent chat operation
+
+This release is for direct interaction with one primary assistant. It performs the conversation, historical import, handoff preparation, verification, and all saves itself. Sub-agents, delegated read-only review, cross-chat task dispatch, and autonomous background agent work are unsupported. Direct tool calls and deterministic helpers remain available. Approved automatic import runs during the active chat.
+
+This is a skill behavior rule, not a plugin permission that disables host agent tools or globally locks other chats. Sequential cross-device use remains supported. Ordinary revision checks, highest-handoff-version discovery, and safe retries remain necessary even with one agent. No multi-agent infrastructure or lock service is required. Future narrowly scoped delegation is a separate development consideration, not an enabled mode.

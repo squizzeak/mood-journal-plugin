@@ -7,3 +7,5 @@ Keep the portable and compatibility manifest name/version/description synchroniz
 Run `python3 scripts/validate.py` and `python3 -m unittest discover -s tests -v`. Exercise release changes with temporary git repositories. Keep archive contents allowlisted and never package a workspace recursively. Only explicit workflow dispatch can publish a release; do not add publishing on push.
 
 Use Conventional Commit subjects where helpful. Release notes are generated from commit subjects, so describe user-visible changes accurately. The workflow owns release versions and incremental changelog sections.
+
+Runtime product scope is strict single-agent chat interaction, including imports, verification, and persistence. Do not add sub-agent orchestration or background agent execution as an implicit optimization. Preserve portability and sequential cross-device use.

@@ -32,6 +32,8 @@ Calculate SHA-256 for every included PDF except the checksum report itself; incl
 
 ## Highest-version discovery gate
 
+The primary assistant performs this gate directly under the strict single-agent contract. It does not delegate discovery, review, or writes. Revision/conflict checks below protect against stale state, retries, and external edits; they do not make multi-agent use supported.
+
 Never continue from the first search hit, a prominent old handoff, lexicographic title ordering, a cached pointer, or the most recently edited record. Before creating or updating a numbered handoff, inventory the complete relevant handoff series in the selected journal and authorized destination. A series has a stable identity; journal, audience/purpose, and any explicitly established series boundary distinguish it from unrelated handoffs. Weekly folders alone do not reset version numbering. If the series boundary is ambiguous, resolve it before allocation.
 
 1. Retrieve the handoff index and enumerate matching records across all pages and relevant containers. Include archived, superseded, draft, failed, and duplicate records when exposed, plus known reserved/deleted-version tombstones in the ledger. An index is a locator aid, not proof of completeness. Check known prior locators and explicit user reports of a higher version. If a user reports v8 while search returns only v2, treat the mismatch as unresolved and search/retrieve further; never silently create v3.

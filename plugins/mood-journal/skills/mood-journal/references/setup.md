@@ -6,6 +6,8 @@ Reuse explicit preferences already supplied in this conversation or retrieved fr
 
 ## Explain the choices before asking
 
+State briefly that this release uses one assistant in the active chat for conversation, imports, handoffs and saving. Delegation and background agents are not operational choices. Users may continue from another device sequentially; the plugin is not a global lock on other chats. Do not demand an extra consent question for this fixed product behavior.
+
 Use a short, concrete comparison suitable for the surface. In voice, summarize aloud and ask one question at a time. In text, use a compact table or short parallel options. Explain the benefit and the material limitation of each choice, identify what is actually available, and label unknown capabilities as unverified. Do not present unavailable storage as selectable or bury limitations in linked documentation.
 
 Project organization and enforcement are separate from storage. Present these three scope options:
