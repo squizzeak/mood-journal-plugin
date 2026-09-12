@@ -15,6 +15,7 @@ concurrency:
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
@@ -53,7 +54,9 @@ jobs:
           git commit -m "chore(release): $RELEASE_TAG"
           git tag -a "$RELEASE_TAG" -m "Release $RELEASE_TAG"
       - name: Build and verify archives
-        run: python3 scripts/release.py build
+        run: |
+          python3 scripts/release.py build
+          (cd dist && sha256sum --check SHA256SUMS)
       - uses: actions/upload-artifact@v4
         with:
           name: mood-journal-release-${{ github.run_id }}

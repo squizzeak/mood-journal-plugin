@@ -33,5 +33,7 @@
         ]
       }
     }
-  }
+  },
+  "repository": "https://github.com/squizzeak/mood-journal-plugin",
+  "homepage": "https://github.com/squizzeak/mood-journal-plugin"
 }

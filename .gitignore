@@ -8,3 +8,4 @@ dist/
 journal-data/
 private/
 *.log
+.codebase-memory/

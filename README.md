@@ -159,12 +159,12 @@ Use a new private output directory, outside this public repository. `selected-ch
 plugins/mood-journal/
   plugin.json
   .codex-plugin/plugin.json
-  assets/{logo.png,logo.svg}
+  assets/{logo.png,logo.svg,example-prompts.png}
   skills/mood-journal/
     SKILL.md
     agents/openai.yaml
-    references/{storage,records,inquiries,handoffs,prompts,history-ingestion}.md
-    scripts/ingest_chats.py
+    references/{setup,storage,records,inquiries,handoffs,prompts,history-ingestion}.md
+    scripts/{ingest_chats,select_handoff}.py
     LICENSE
     NOTICE.md
 scripts/{validate,release}.py
@@ -192,7 +192,9 @@ Archive contents are explicit and drawn from tracked paths. Every ZIP is checked
 
 Requires Python 3.11+, Git, and GitHub CLI in the release environment. GitHub-hosted Ubuntu provides the latter two; the workflow selects Python. The plugin runtime needs none of these.
 
-After pushing to a fresh GitHub repository with `main` as default branch, open **Actions → Release → Run workflow**. Default `publish=false` builds downloadable Actions artifacts without pushing a release. Set `publish=true` to commit version/changelog changes, atomically push the default branch and new tag, then create a GitHub draft, upload artifacts, and publish it. The release workflow is only `workflow_dispatch`; CI on push/PR does not publish. [Manual workflow guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
+The source repository is [squizzeak/mood-journal-plugin](https://github.com/squizzeak/mood-journal-plugin). GitHub Actions produces the authoritative initial and subsequent release artifacts. Local builds are validation-only and are not distributed as official releases.
+
+With `main` as the default branch, open **Actions → Release → Run workflow**. Default `publish=false` builds downloadable Actions artifacts without pushing a release. Set `publish=true` to commit version/changelog changes, atomically push the default branch and new tag, then create a GitHub draft, upload artifacts, and publish it. The release workflow is only `workflow_dispatch`; CI on push/PR does not publish. [Manual workflow guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
 
 Versions use strict-SemVer-compatible UTC calendar versioning `YEAR.(MONTH*100+DAY).SEQUENCE`. Examples: `2026.912.0`, another release that day `2026.912.1`, and January 2 `2027.102.0`. Numeric components have no leading zeroes. Every existing same-date tag reserves its sequence, including unpublished tags.
 

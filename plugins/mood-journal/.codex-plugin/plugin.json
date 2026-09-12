@@ -29,5 +29,7 @@
       "./assets/example-prompts.png"
     ]
   },
-  "license": "CC-BY-SA-4.0"
+  "license": "CC-BY-SA-4.0",
+  "repository": "https://github.com/squizzeak/mood-journal-plugin",
+  "homepage": "https://github.com/squizzeak/mood-journal-plugin"
 }

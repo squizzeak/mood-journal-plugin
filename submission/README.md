@@ -2,7 +2,7 @@
 
 This folder contains prepared listing copy, a logo, an illustrative prompt-preview PNG, five positive and three negative reproducible test cases, policy documents, and cloud/mobile test instructions. `listing.json` is a maintainer worksheet, not a documented upload API schema. Null fields are deliberately unfilled publisher facts; never invent verification or attestations.
 
-Submit as **skills-only**. The package has no bundled MCP server, existing-integration reference, shell hook, required app, or local runtime. The skill prefers verified persistent files/records, can use single-file or single-record memory, and falls back to a retained native project conversation without inventing a separate save. No storage plugin is necessary. Native cloud/mobile exact file writes remain unverified, but the conversational workflow is designed for those surfaces. User-assisted saving is not the normal path. A ZIP alone does not publish or install a cloud plugin.
+Submit as **skills-only**. The package has no bundled MCP server, existing-integration reference, shell hook, required app, or local runtime. The skill prefers verified persistent files/records, can use single-file or single-record memory, and falls back to a retained native conversation inside or outside projects without inventing a separate save. No storage plugin is necessary. Native cloud/mobile exact file writes remain unverified, but the conversational workflow is designed for those surfaces. User-assisted saving is not the normal path. A ZIP alone does not publish or install a cloud plugin.
 
 ## Artifacts
 
@@ -29,3 +29,7 @@ Install the submitted/test plugin through a surface-supported mechanism; copying
 ## Additional capability acceptance
 
 Test starting in native project-chat mode without a storage plugin, then installing/selecting compatible storage and explicitly migrating prior journal material. Verify preserved dates, original-source retention, no duplicate entries on retry, and explicit partial status when only compressed memory survives. Test one authorized local journal file without a search API. The complete capability tiers are in [capabilities.md](../docs/capabilities.md), included in this submission kit, and in the packaged skill/source README.
+
+## Publication provenance
+
+Use only artifacts produced by the repository’s manually dispatched GitHub Actions Release workflow for submission. Local archives are validation builds. The GitHub repository may be public while publisher identity, final legal URLs, availability decisions and live cloud/mobile tests remain incomplete; public source availability does not claim directory approval.
