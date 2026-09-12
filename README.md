@@ -1,6 +1,6 @@
 # Mood Journal
 
-A distributable, storage-neutral journaling skill for ChatGPT and compatible skill hosts. It supports thoughtful mood check-ins, brief health/event updates, future inquiry topics, and evidence-bound clinician handoffs. It is adapted from an existing journaling workflow without altering that installed skill.
+A single-agent, storage-neutral journaling skill for ChatGPT and compatible skill hosts. It supports thoughtful mood check-ins, brief health/event updates, future inquiry topics, and evidence-bound clinician handoffs. It is adapted from an existing journaling workflow without altering that installed skill.
 
 **Use the storage available to the host.** Prefer complete, verified journal files or records. A single persistent file or memory item can work without a storage plugin. Native retained conversations inside or outside projects provide a limited cloud/mobile fallback, with explicit retention and retrieval limits. If no persistent destination exists, the skill reports that rather than claiming a save.
 
@@ -8,13 +8,15 @@ A distributable, storage-neutral journaling skill for ChatGPT and compatible ski
 
 ![Illustrative prompt preview](plugins/mood-journal/assets/example-prompts.png)
 
+**Project tracking:** [development hub](https://github.com/squizzeak/mood-journal-plugin/discussions/11), [issues](https://github.com/squizzeak/mood-journal-plugin/issues), and [design discussions](https://github.com/squizzeak/mood-journal-plugin/discussions). GitHub is the authoritative development tracker.
+
+**Getting started:** follow [installation](#installation), then begin a journal chat. The skill explains available storage and project modes before recording your choices. For release downloads, use the artifacts produced by [GitHub Actions](https://github.com/squizzeak/mood-journal-plugin/actions/workflows/release.yml); directory approval and live cloud/mobile acceptance are still pending.
+
 ## Table of contents
 
 - [Single-agent chat operation](#single-agent-chat-operation)
-
 - [Handoff version integrity](#handoff-version-integrity)
 - [Informed first-use setup](#informed-first-use-setup)
-
 - [Overview](#overview)
 - [Capabilities](#capabilities)
 - [Projects are optional](#projects-are-optional)

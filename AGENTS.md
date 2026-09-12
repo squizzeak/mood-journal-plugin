@@ -71,6 +71,10 @@ Preserve the four allowlisted packages (directory, skills, marketplace, submissi
 
 If publishing fails after the branch/tag push, preserve that tag and finish the draft with the exact Actions-produced assets. Do not delete/reassign the tag or rerun preparation to hide a partial release. Verify remote commit, workflow conclusion, asset inventory and checksums before reporting publication complete. GitHub publication is separate from ChatGPT directory submission/approval.
 
+## Project tracking
+
+Use GitHub Issues for actionable tasks, missing publisher inputs, bugs and acceptance work; use GitHub Discussions for design decisions, research notes and the development hub. GitHub is the authoritative tracker for this repository. Do not create new Rosetta development records or duplicate active tasks there. Existing Rosetta records are retired migration history, not the current backlog. Keep development tracking separate from users’ runtime journal storage, which remains provider-neutral. Search existing issues/discussions before creating duplicates and preserve decisions, evidence and unresolved limitations. Never post personal journal content to public tracking.
+
 ## Reporting changes
 
 Report what changed, why, validation performed and material limitations. Identify tests not run, pending publisher inputs and host behavior still unverified. Never claim an install, save, migration, release, or directory approval solely because files were generated.
