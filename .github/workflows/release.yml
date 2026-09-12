@@ -16,6 +16,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      release_tag: ${{ steps.release_metadata.outputs.tag }}
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
@@ -45,6 +47,9 @@ jobs:
           python3 scripts/release.py prepare --releases-json "$RUNNER_TEMP/releases.json"
           python3 scripts/validate.py
           python3 -c 'import json; print("RELEASE_TAG=" + json.load(open(".release/metadata.json"))["tag"])' >> "$GITHUB_ENV"
+      - name: Expose release tag
+        id: release_metadata
+        run: python3 -c 'import json, os; open(os.environ["GITHUB_OUTPUT"], "a").write("tag=" + json.load(open(".release/metadata.json"))["tag"] + "\n")'
       - name: Commit release snapshot
         if: inputs.publish
         run: |
@@ -69,3 +74,13 @@ jobs:
           gh release create "$RELEASE_TAG" --verify-tag --draft --title "Mood Journal $RELEASE_TAG" --notes-file dist/RELEASE-NOTES.md
           gh release upload "$RELEASE_TAG" dist/*
           gh release edit "$RELEASE_TAG" --draft=false
+
+  prepare-submission:
+    if: inputs.publish
+    needs: release
+    permissions:
+      contents: read
+      copilot-requests: write
+    uses: ./.github/workflows/prepare-submission.yml
+    with:
+      release_tag: ${{ needs.release.outputs.release_tag }}

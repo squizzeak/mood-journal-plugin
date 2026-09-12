@@ -131,6 +131,8 @@ Track actual submission and reviewer follow-through in [issue #2](https://github
 3. Once the materials are ready, generate and verify the exact submission artifacts using GitHub Actions in [#13](https://github.com/squizzeak/mood-journal-plugin/issues/13). Local artifacts suffice for development build testing; official release artifacts are not needed during information gathering.
 4. Complete accurate portal attestations, submit the accepted package format through the skills-only route, record the version and receipt/status, and track review feedback in #2. After approval, complete any publication step and verify the directory listing.
 
+After an actual stable release, the [submission preparation workflow](.github/workflows/prepare-submission.yml) can verify published assets and prepare editorial drafts. Optional Copilot generation is off by default; see the [automation instructions](submission/README.md#automated-preparation-and-copilot) and [billing explanation](submission/README.md#billing-and-the-existing-chatgpt-subscription). Our existing ChatGPT subscription can support interactive drafting/testing, but does not pay for Copilot or OpenAI API calls. Automatic OpenAI portal submission is not implemented because a supported public submission API has not been established.
+
 GitHub has native blocked-by relationships between these tasks. A GitHub issue does not technically prevent someone from using the external submission portal; it records the required project sequencing. A public repository, local build, or GitHub release is not OpenAI approval.
 
 ## Using the skill

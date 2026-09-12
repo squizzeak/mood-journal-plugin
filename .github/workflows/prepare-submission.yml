@@ -1,0 +1,107 @@
+name: Prepare submission drafts
+on:
+  workflow_call:
+    inputs:
+      release_tag:
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Published stable release tag; blank selects latest
+        required: false
+        type: string
+  release:
+    types: [published]
+permissions:
+  contents: read
+  copilot-requests: write
+concurrency:
+  group: submission-preparation-${{ inputs.release_tag || github.event.release.tag_name || 'latest' }}
+  cancel-in-progress: false
+jobs:
+  prepare:
+    if: github.event_name != 'release' || !github.event.release.prerelease
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Resolve published release and download its exact assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          REQUESTED_TAG: ${{ inputs.release_tag || github.event.release.tag_name }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/published-assets"
+          python3 - <<'PY'
+          import json, os, re, subprocess
+          from pathlib import Path
+          tag = os.environ.get('REQUESTED_TAG', '')
+          if tag and not re.fullmatch(r'v\d{4}\.\d{1,4}\.\d+', tag):
+              raise SystemExit('Unsupported release tag')
+          endpoint = 'repos/'+os.environ['GH_REPO']+'/releases/'+('tags/'+tag if tag else 'latest')
+          data = json.loads(subprocess.check_output(['gh','api',endpoint],text=True))
+          tag = data['tag_name']
+          if not re.fullmatch(r'v\d{4}\.\d{1,4}\.\d+',tag) or data['draft'] or data['prerelease']:
+              raise SystemExit('Published stable release required')
+          Path(os.environ['RUNNER_TEMP'],'published-release.json').write_text(json.dumps(data))
+          sha = subprocess.check_output(['git','rev-parse','--verify','refs/tags/'+tag+'^{commit}'],text=True).strip()
+          with open(os.environ['GITHUB_ENV'],'a') as env:
+              env.write('SUBMISSION_TAG='+tag+'\nSUBMISSION_COMMIT='+sha+'\n')
+          subprocess.run(['gh','release','download',tag,'--repo',os.environ['GH_REPO'],'--dir',os.environ['RUNNER_TEMP']+'/published-assets'],check=True)
+          PY
+      - name: Verify assets and prepare review documents
+        run: |
+          python3 scripts/prepare_submission.py --release-json "$RUNNER_TEMP/published-release.json" --assets "$RUNNER_TEMP/published-assets" --commit "$SUBMISSION_COMMIT" --output "$RUNNER_TEMP/submission-preparation"
+      - uses: actions/setup-node@v4
+        if: vars.SUBMISSION_COPILOT_ENABLED == 'true'
+        with:
+          node-version: '22'
+      - name: Install explicitly configured Copilot CLI
+        if: vars.SUBMISSION_COPILOT_ENABLED == 'true'
+        env:
+          COPILOT_CLI_VERSION: ${{ vars.SUBMISSION_COPILOT_CLI_VERSION }}
+        run: |
+          if ! [[ "$COPILOT_CLI_VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo 'Configure a tested exact SUBMISSION_COPILOT_CLI_VERSION before enabling Copilot.' >&2
+            exit 1
+          fi
+          npm install --global "@github/copilot@$COPILOT_CLI_VERSION"
+      - name: Draft user-facing changes with Copilot
+        if: vars.SUBMISSION_COPILOT_ENABLED == 'true'
+        timeout-minutes: 3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import os, subprocess, tempfile
+          from pathlib import Path
+          out=Path(os.environ['RUNNER_TEMP'])/'submission-preparation'
+          prompt=(out/'COPILOT-PROMPT.txt').read_text()
+          with tempfile.TemporaryDirectory() as work:
+              env=dict(os.environ, COPILOT_HOME=work+'/config')
+              result=subprocess.run(['copilot','-p',prompt,'-s','--no-ask-user','--disable-builtin-mcps','--available-tools=view','--deny-tool=read,write,shell,url,memory'],cwd=work,env=env,text=True,capture_output=True,timeout=150,check=True)
+          text=result.stdout.strip()
+          if not text or len(text)>20000:
+              raise SystemExit('Empty or excessive Copilot draft; inspect manually')
+          (out/'USER-CHANGELOG-DRAFT.md').write_text('# Draft — human review required\n\n'+text+'\n')
+          (out/'COPILOT-VERSION.txt').write_text(subprocess.check_output(['copilot','--version'],text=True))
+          PY
+      - name: Record preparation status
+        if: always()
+        run: |
+          echo 'Submission preparation only. No OpenAI submission, attestations, or publication was performed.' >> "$GITHUB_STEP_SUMMARY"
+          echo 'Review these drafts in submission issue #2. Missing publisher/test data remains a blocker.' >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: submission-drafts-${{ github.run_id }}-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/submission-preparation/
+          if-no-files-found: warn
+          retention-days: 7
