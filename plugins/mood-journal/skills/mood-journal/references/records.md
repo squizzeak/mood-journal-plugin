@@ -4,7 +4,7 @@ Use a readable narrative with stable headings for full sessions. For one-off upd
 
 ## Metadata
 
-Record entry type `mood_journal`, schema version `1`, session ID, mode, original session start/end when known, save timestamp, timezone/offset, available context scope, source type, and synthesis confirmation status. Use the actual host/product source if known; do not hard-code ChatGPT for other hosts. Represent unsupported metadata in the Markdown body. A suggested title is `Mood Journal — YYYY-MM-DD HH:mm`; the locator/session ID distinguishes collisions.
+Record entry type `mood_journal`, schema version `1`, stable journal ID, session ID, mode, original session start/end when known, save timestamp, timezone/offset, available context scope, source type, and synthesis confirmation status. Use the actual host/product source if known; do not hard-code ChatGPT for other hosts. Represent unsupported metadata in the Markdown body. A suggested title is `Mood Journal — YYYY-MM-DD HH:mm`; the locator/session ID distinguishes collisions.
 
 ## Core headings for full sessions
 

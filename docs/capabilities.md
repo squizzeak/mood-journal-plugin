@@ -41,3 +41,13 @@ With a saved, scoped opt-in, capability detection at session start/resume or act
 Users can select any capable installed or native storage option. An established choice persists. Initially, one capable installed storage plugin is the default; multiple capable plugins default to native storage when available. If native persistence is unavailable, ask for a destination instead of picking a service arbitrarily. No plugins falls back to available native/local persistence. Defaults never invent file capabilities or authorize historical transfers.
 
 “Move my journal to [backend] and use it for future entries” migrates canonical records and switches routing after verification. Source disposition is selectable: retain (default), archive, or explicitly scoped deletion. Verify the destination and cutover before cleanup; never delete full originals after a lossy summary-memory/chat-only migration. Interrupted copies resume from the ledger; failed cleanup stays pending without reverting successful future-save routing. Unrelated/shared data is excluded. Native archival/deletion is offered only where real tools support it.
+
+## Projects are optional
+
+A journal has a stable identity independent of its ChatGPT Project, current conversation, or storage provider. Use the same selected journal from ordinary chats or projects whenever its authorized backend is accessible. Backend migrations preserve that identity. If several journals are available, select the intended one before accessing history; matching names do not authorize merging.
+
+Without a storage plugin, an ordinary retained chat can hold a complete dated entry, with host-managed retention and no independent save receipt or guarantee of exact retrieval in later chats. A native full record/file can be used if actually exposed. No durable destination means explicitly unsaved reflection. No mandatory manual Save-to-project step is introduced.
+
+Historical import outside projects accepts explicitly selected chats, exports, or an authorized source ledger. It does not silently search or import the whole account. Automatic import preferences bind to the journal and exact source scope, not merely a project name.
+
+Users may opt into a require-project policy for a journal. The skill checks trusted host project identity and pauses journal retrieval, writes, and migration outside the allowed project or when identity is unknown. This is behavioral enforcement, not a directory manifest restriction or security boundary. It does not prevent host chat retention; an explicit user policy change can disable it. No such restriction is enabled by default.

@@ -2,7 +2,7 @@
 
 A distributable, storage-neutral journaling skill for ChatGPT and compatible skill hosts. It supports thoughtful mood check-ins, brief health/event updates, future inquiry topics, and evidence-bound clinician handoffs. It is adapted from an existing journaling workflow without altering that installed skill.
 
-**Use the storage available to the host.** Prefer complete, verified journal files or records. A single persistent file or memory item can work without a storage plugin. Native retained project conversations provide a limited cloud/mobile fallback, with explicit retention and retrieval limits. If no persistent destination exists, the skill reports that rather than claiming a save.
+**Use the storage available to the host.** Prefer complete, verified journal files or records. A single persistent file or memory item can work without a storage plugin. Native retained conversations inside or outside projects provide a limited cloud/mobile fallback, with explicit retention and retrieval limits. If no persistent destination exists, the skill reports that rather than claiming a save.
 
 **Cloud/mobile design:** the plugin needs no local executable or storage connector. It can use native retained project context, memory, or exposed durable file capabilities. Automated native project-file creation/read-back remains unverified; the fallback does not claim that capability. User-assisted project saving is not the selected design. Live installation and cross-device tests remain pending. See [runtime capability notes](docs/capabilities.md), [native storage research](docs/native-storage-research.md), and [submission preparation](submission/README.md).
 
@@ -12,6 +12,7 @@ A distributable, storage-neutral journaling skill for ChatGPT and compatible ski
 
 - [Overview](#overview)
 - [Capabilities](#capabilities)
+- [Projects are optional](#projects-are-optional)
 - [Storage and cross-device support](#storage-and-cross-device-support)
 - [Installation](#installation)
 - [Using the skill](#using-the-skill)
@@ -52,6 +53,17 @@ The portable `plugin.json` identifies the package. An OpenAI presentation extens
 | Voice recovery | Preserves original timestamps and staged synthesis across interruptions. | Disconnection is not permission to save. |
 
 Full entries use stable headings for session details, synthesized account, mood, events, bodily context, coping/functioning, needs/follow-up, and provenance. One-off updates stay short. Unsupported domains remain explicitly unknown or not discussed. The complete behavior is in [SKILL.md](plugins/mood-journal/skills/mood-journal/SKILL.md) and its linked references.
+
+
+## Projects are optional
+
+A journal has a stable identity independent of its ChatGPT Project, current conversation, or storage provider. Use the same selected journal from ordinary chats or projects whenever its authorized backend is accessible. Backend migrations preserve that identity. If several journals are available, select the intended one before accessing history; matching names do not authorize merging.
+
+Without a storage plugin, an ordinary retained chat can hold a complete dated entry, with host-managed retention and no independent save receipt or guarantee of exact retrieval in later chats. A native full record/file can be used if actually exposed. No durable destination means explicitly unsaved reflection. No mandatory manual Save-to-project step is introduced.
+
+Historical import outside projects accepts explicitly selected chats, exports, or an authorized source ledger. It does not silently search or import the whole account. Automatic import preferences bind to the journal and exact source scope, not merely a project name.
+
+Users may opt into a require-project policy for a journal. The skill checks trusted host project identity and pauses journal retrieval, writes, and migration outside the allowed project or when identity is unknown. This is behavioral enforcement, not a directory manifest restriction or security boundary. It does not prevent host chat retention; an explicit user policy change can disable it. No such restriction is enabled by default.
 
 ## Storage and cross-device support
 

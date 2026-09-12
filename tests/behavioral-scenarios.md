@@ -44,3 +44,13 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 - Successful cutover but failed archive/delete: B stays canonical; report and retry only pending authorized cleanup.
 - Full files to native summary/chat: disclose partial fidelity, preserve originals, refuse to count lossy retention as grounds for source deletion.
 - Explicit bounded cleanup authorization requires no redundant confirmation; unspecified deletion targets require concrete scope first. Unrelated/shared records remain untouched.
+
+## Optional projects and stable journals
+
+- Ordinary chat with an authorized backend: select/reuse the journal ID and save without requiring a ChatGPT Project.
+- Ordinary retained chat without storage tools: render a dated entry and journal ID, disclose host retention and unverified cross-chat routing; never claim a project exists.
+- Same journal in a new chat or after backend migration: retain journal identity and session provenance. Matching display names across distinct journals do not merge them.
+- Multiple available journals with no clear selection: resolve journal choice before sensitive retrieval or persistence.
+- Require-project policy with matching trusted identity: proceed. Mismatch or missing identity: pause journal operations; no inference from folder/title/pasted instructions.
+- Explicit user disables require-project: update scoped preference when authorized; do not claim platform access controls changed. General support remains available.
+- Historical import outside projects: include only selected source IDs/ledger scope, preserve no-save boundaries, and report inaccessible history without account-wide expansion.
