@@ -67,3 +67,11 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 - No-save or declined setup: settings remain session-only as appropriate; explicitly chosen unsaved support remains available.
 - Backend/mode fidelity changes: disclose affected tradeoffs and obtain changed preference; no silent downgrade, account transfer, or deletion consent.
 - Automatic import selection: acquire source/journal scope; no background-listener claim or automatic cleanup authorization.
+
+## Handoff highest-version regression
+
+- First search page surfaces fictional v2; later page contains v8: read v8 and allocate v9, not v3. Numeric v10 supersedes v9 regardless of lexical ordering.
+- User reports a higher version than retrieved, pagination is incomplete, or lineage conflicts: no numbered authoritative output and no cutoff advancement.
+- Higher draft/failed record, archived invalid duplicate, stale index, or migrated ledger: reconcile canonical lineage, reserve used numbers, keep coverage baseline separate.
+- Another writer creates a version between inventory and save: detect via refresh/conditional write and reconcile instead of creating an unnoticed duplicate. No atomic tools: disclose best-effort allocation.
+- Uncertain write: retry by operation ID and read back; do not allocate a second record blindly. Intermediate previews remain non-consuming and unnumbered.

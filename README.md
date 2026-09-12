@@ -10,6 +10,7 @@ A distributable, storage-neutral journaling skill for ChatGPT and compatible ski
 
 ## Table of contents
 
+- [Handoff version integrity](#handoff-version-integrity)
 - [Informed first-use setup](#informed-first-use-setup)
 
 - [Overview](#overview)
@@ -232,3 +233,7 @@ CC BY-SA 4.0, retaining attribution to Sunny Patneedi's Claude Starter Kit and t
 The skill explicitly asks for operational preferences before first journal-history retrieval or saving, after explaining capabilities, limitations, benefits and drawbacks. Project choices are: no preferred project, a preferred project for organization while remaining usable elsewhere, or a required project with the disclosed limits of behavioral enforcement. Storage selection is separate and covers actual full-record, local, single-record, summary-memory, retained-chat or unsaved options. The plugin-count defaults are recommendations the user accepts or overrides, not silent choices.
 
 Setup records the selected journal, project preference, backend, saving behavior and manual/disabled/automatic historical-import policy. It explains save timing and the absence of a guaranteed background import listener. Previously explicit choices are reused; only missing or materially changed preferences require questions. Users can say “show my journal settings,” “explain the modes,” or “change my journal setup.” Configuration is conversational and stored in authorized journal storage where possible; there is no custom installer, native settings panel, or permission toggle. Configuration writes do not save unfinished journal content or authorize historical copying/deletion. Unverified preference persistence is disclosed.
+
+## Handoff version integrity
+
+Before a numbered handoff, the skill inventories the complete relevant series, including archived/reserved versions, and compares sequence numbers numerically. It must not branch from an old first search result: fictional v2 followed by a discovered v8 yields v9. Canonical parent, highest reserved number, and verified coverage baseline are tracked separately. Unresolved drafts, duplicate versions, missing lineage, or incomplete retrieval block authoritative numbering and leave coverage unchanged. The skill refreshes the inventory before writing, uses atomic allocation when available, and verifies the final record/index. Without atomic backend support, race prevention is best effort and is disclosed. An optional dependency-free inventory checker and fictional regression tests exercise selection; no Python runtime is required for native skill use.
