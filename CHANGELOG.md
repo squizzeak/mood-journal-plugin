@@ -9,3 +9,4 @@ Initial release.
 - feat: make projects optional with stable journal identity and optional project scope (`2ec28c27c4ba`)
 - docs: preserve projects as optional journal organization (`3529b0435a37`)
 - feat: acquire informed operational preferences during journal setup (`d9d1e422e834`)
+- fix: verify highest handoff version before creating a revision (`7e28dce85f79`)
