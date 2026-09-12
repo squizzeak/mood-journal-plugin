@@ -1,0 +1,23 @@
+{
+  "name": "Mood Journal",
+  "short_description": "Reflect and journal with the storage you have",
+  "long_description": "User-led journaling, brief mood updates, future inquiry topics, and clinician summaries. Uses native project context, single-file memory, local projects, or authorized storage tools. Clearly distinguishes verified records, summary memory, retained chat entries, and pending saves.",
+  "category": "Productivity",
+  "publisher_name": null,
+  "website_url": null,
+  "support_url": null,
+  "privacy_policy_url": null,
+  "terms_url": null,
+  "countries": [],
+  "developer_identity_verified": false,
+  "policy_attestations_completed": false,
+  "cloud_mobile_tests_completed": false,
+  "starter_prompts": [
+    "Help me journal about today.",
+    "Log a brief mood update.",
+    "Prepare a summary for my next appointment."
+  ],
+  "logo": "../plugins/mood-journal/assets/logo.png",
+  "status": "Publisher details and platform review pending; not a portal API payload.",
+  "preview_image": "../plugins/mood-journal/assets/example-prompts.png"
+}

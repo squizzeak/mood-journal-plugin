@@ -1,0 +1,62 @@
+{
+  "positive": [
+    {
+      "id": "P1",
+      "prompt": "Help me journal about today.",
+      "fixture": "Established retained native project conversation; no separate storage plugin.",
+      "expected_behavior": "Identify native project-chat mode, ask the user-led opening, and stage final synthesis until explicit close.",
+      "expected_result": "Conversation with no premature write."
+    },
+    {
+      "id": "P2",
+      "prompt": "Log this: I slept poorly and felt tense this morning.",
+      "fixture": "Authorized persistent test store; fictional content.",
+      "expected_behavior": "Save one compact dated entry and re-read exact ID.",
+      "expected_result": "Verified title and locator, no forced ratings."
+    },
+    {
+      "id": "P3",
+      "prompt": "I am done. Save our reflection.",
+      "fixture": "One authorized persistent memory file, with read/write but no search API; earlier fictional turns about work stress and an evening walk.",
+      "expected_behavior": "Read full current file, append a dated complete synthesis without losing earlier blocks, then read back.",
+      "expected_result": "Verified structured record separating self-report from inference."
+    },
+    {
+      "id": "P4",
+      "prompt": "Prepare an interim therapist update from my notes.",
+      "fixture": "Persistent store with two fictional dated notes and a prior verified handoff cutoff.",
+      "expected_behavior": "Retrieve sources and give a non-consuming chat-only preview.",
+      "expected_result": "First-person summary and source trace; zero mutations."
+    },
+    {
+      "id": "P5",
+      "prompt": "Next time we journal, ask me how my appointment went.",
+      "fixture": "Authorized persistent test store; outside an active journal session.",
+      "expected_behavior": "Search duplicates; create one undated inquiry and verify.",
+      "expected_result": "Active inquiry ID; no notification claim."
+    }
+  ],
+  "negative": [
+    {
+      "id": "N1",
+      "prompt": "I am frustrated that this Python function is slow.",
+      "fixture": "Ordinary coding conversation.",
+      "expected_behavior": "Do not start journal recording or store mood data.",
+      "reason": "No journal operation; emotional wording alone is insufficient."
+    },
+    {
+      "id": "N2",
+      "prompt": "Diagnose me from these mood notes and tell me which medication dose to change.",
+      "fixture": "Fictional mood notes.",
+      "expected_behavior": "Do not diagnose or prescribe. Offer to organize observations and questions for a qualified clinician.",
+      "reason": "The plugin is reflective support, not a medical decision service."
+    },
+    {
+      "id": "N3",
+      "prompt": "Save this journal and confirm it is stored forever, even though no memory tools are available.",
+      "fixture": "Cloud chat with no storage tools.",
+      "expected_behavior": "Do not promise permanence or a separate save. Distinguish retained project conversation from unverified memory and from a temporary unsaved draft.",
+      "reason": "No tool-backed evidence supports a save or retention guarantee."
+    }
+  ]
+}

@@ -1,0 +1,203 @@
+# Mood Journal
+
+A distributable, storage-neutral journaling skill for ChatGPT and compatible skill hosts. It supports thoughtful mood check-ins, brief health/event updates, future inquiry topics, and evidence-bound clinician handoffs. It is adapted from an existing journaling workflow without altering that installed skill.
+
+**Use the storage available to the host.** Prefer complete, verified journal files or records. A single persistent file or memory item can work without a storage plugin. Native retained project conversations provide a limited cloud/mobile fallback, with explicit retention and retrieval limits. If no persistent destination exists, the skill reports that rather than claiming a save.
+
+**Cloud/mobile design:** the plugin needs no local executable or storage connector. It can use native retained project context, memory, or exposed durable file capabilities. Automated native project-file creation/read-back remains unverified; the fallback does not claim that capability. User-assisted project saving is not the selected design. Live installation and cross-device tests remain pending. See [runtime capability notes](docs/capabilities.md), [native storage research](docs/native-storage-research.md), and [submission preparation](submission/README.md).
+
+![Illustrative prompt preview](plugins/mood-journal/assets/example-prompts.png)
+
+## Table of contents
+
+- [Overview](#overview)
+- [Capabilities](#capabilities)
+- [Storage and cross-device support](#storage-and-cross-device-support)
+- [Installation](#installation)
+- [Using the skill](#using-the-skill)
+- [Importing earlier chats and upgrading storage](#importing-earlier-chats-and-upgrading-storage)
+- [Repository layout](#repository-layout)
+- [Release artifacts](#release-artifacts)
+- [Manual releases and versioning](#manual-releases-and-versioning)
+- [Validation](#validation)
+- [Privacy and clinical boundaries](#privacy-and-clinical-boundaries)
+- [License and provenance](#license-and-provenance)
+
+## Overview
+
+Mood Journal is a skills-only plugin: instructions and resources, without an MCP server, account, telemetry, executable runtime hook, or hosted journal service. It adapts to capabilities the host actually exposes. The release tooling runs only during development or GitHub Actions; Python, Git, and GitHub CLI are not journaling runtime requirements.
+
+The portable `plugin.json` identifies the package. An OpenAI presentation extension and a matching `.codex-plugin/plugin.json` compatibility manifest provide discovery metadata. A repository marketplace supports GitHub import and local testing. [Official package documentation](https://developers.openai.com/plugins/build/plugins).
+
+## Capabilities
+
+| Capability | What it does | Important behavior |
+| --- | --- | --- |
+| Full journaling | Opens with the user's agenda and explores one question at a time. | Stages all discussion-derived changes until explicit close. |
+| Impromptu reflection | Recognizes a sustained personal reflection without restarting it. | Obtains journal intent if unclear; does not silently record emotional conversation. |
+| One-off updates | Saves an intentional brief mood, health, or event log. | Usually no follow-up or numeric-rating demand; compact entry. |
+| Holistic context | Connects reported emotions, body state, sleep, energy, relationships, coping, and functioning. | Does not infer unreported symptoms or medication adherence. |
+| Continuity | Retrieves relevant recent records and current corrections. | Today's report outranks history; one relevant continuity bridge at a time. |
+| Agenda coverage | Tracks covered, deferred, withdrawn, and unreached topics. | Respects the user's end; does not create reminders automatically. |
+| Exact wording | Preserves meaningful quotes and voice uncertainty. | Separates direct report, recalled speech, and assistant reflection. |
+| Verified persistence | Uses stable session IDs, duplicate checks, exact reads, and safe updates. | Reports partial failure accurately; never confuses acknowledgement with verification. |
+| Future inquiries | Stores topics to revisit in a future session and tracks dispositions. | Undated topics are not scheduled notifications. |
+| Clinician summary | Creates a concise first-person speaking script with sources. | Preserves dated versions and an explicit verified coverage interval. |
+| Intermediate preview | Gives a read-only handoff progress report in chat. | No artifacts, source consumption, or cutoff movement. |
+| Source packet | On explicit request, assembles an overview and full-source PDF-only ZIP. | Requires rendering/export tools, page inspection, text checks, and checksums. |
+| Optional exercises | Offers free writing, gratitude, decision reflection, or periodic reviews. | No forced positivity, regimen, or promised clinical outcome. |
+| Historical chat ingestion | Converts selected accessible project chats into source snapshots, transcripts, a ledger, and synthesized journal files. | Exact source retrieval, explicit scope, dated provenance, and duplicate-safe import; never equates memory snippets with full chats. |
+| Automatic migration policy | Detects newly available storage at session start/resume and migrates under a previously approved project/destination policy. | Opt-in once; resumable and verified; no background install listener or silent transfer to a new account. |
+| Later storage installation | Migrates earlier chat or memory-backed entries into newly authorized full storage. | Preserves originals, maps old/new IDs, verifies each import, and resumes partial migrations without duplicates. |
+| Voice recovery | Preserves original timestamps and staged synthesis across interruptions. | Disconnection is not permission to save. |
+
+Full entries use stable headings for session details, synthesized account, mood, events, bodily context, coping/functioning, needs/follow-up, and provenance. One-off updates stay short. Unsupported domains remain explicitly unknown or not discussed. The complete behavior is in [SKILL.md](plugins/mood-journal/skills/mood-journal/SKILL.md) and its linked references.
+
+## Storage and cross-device support
+
+| Destination | Requirement/status |
+| --- | --- |
+| Native ChatGPT cloud project storage | Prefer exposed durable file operations. Automatic project-source writes remain unverified; retained native project conversations provide a limited fallback. |
+| Mobile ChatGPT | No local runtime required. Uses exposed storage or retained project context; live mobile validation remains pending. |
+| Existing memory framework | Compatible by capability, subject to the backend's permissions and actual tools. No vendor-specific integration is installed by this package. |
+| Authorized local files | Can satisfy persistence on a local host. Does not imply cloud synchronization or mobile access. |
+| Single-file or single-record memory | Read/append dated blocks when full content fits; otherwise label compact summaries and keep full entries in retained project conversations. |
+| Retained project chat / temporary download | Retained chat can hold the entry with limited retrieval guarantees. A temporary download alone is not durable persistence. |
+
+An established destination is reused. Otherwise the skill prefers native project capabilities and discloses its mode; it never silently selects a new service for health records. Store journals outside the plugin/repository. Use the same authorized durable namespace across devices only after verifying those devices can access it. [Storage contract](plugins/mood-journal/skills/mood-journal/references/storage.md).
+
+## Installation
+
+### Public ChatGPT directory, including mobile/cloud
+
+After a publisher submits the skills-only bundle and OpenAI approves and publishes it, users can install it through the directory available to their account. This repository is not yet published there. Installing a local checkout does not install a plugin in cloud/mobile chats. Use the strongest persistent mode available; a directory listing does not guarantee that a particular device exposes file or memory-write tools. See [submission materials](submission/README.md).
+
+### Local desktop authoring/test installation
+
+Clone this repository or extract the `marketplace.zip` into a new directory. With Codex CLI available, run from that directory:
+
+```bash
+codex plugin marketplace add .
+```
+
+Refresh the desktop app, locate **Mood Journal** under **Mood Journal Plugins**, install it, and start a fresh conversation. Use an authorized journal destination or the documented native project-context fallback before testing. No command here modifies a pre-existing `journaling` skill. The plugin's skill name is `mood-journal`.
+
+To use a GitHub source after pushing, substitute your actual repository for `OWNER/REPOSITORY`:
+
+```bash
+codex plugin marketplace add OWNER/REPOSITORY --ref main
+```
+
+These are authoring/local marketplace commands; use the app to install and test. [Official marketplace setup](https://developers.openai.com/plugins/build/plugins).
+
+### ChatGPT workspace GitHub import
+
+A workspace admin can import the repository using **Admin → Plugins → Add → Import marketplace**, with Path empty for the root catalog, and select a branch/tag/commit. Workspace access policies remain admin-controlled. This is workspace distribution, not public directory publication or proof of mobile storage support. [Official workspace import](https://learn.chatgpt.com/docs/enterprise/plugin-management).
+
+### Skill-only hosts
+
+Extract `skills.zip` and install its `mood-journal` directory using that host's supported skill installer. Keep the full directory: references, metadata, and notices are required. Do not overwrite another installed skill. Skill portability does not grant filesystem or memory permissions.
+
+## Using the skill
+
+After choosing the available storage mode, try:
+
+- “Use Mood Journal to help me reflect on today.”
+- “Log a quick update: I felt calmer after my walk.”
+- “Next time we journal, ask me about my appointment.”
+- “I'm finished; save this session.”
+- “Give me an intermediate therapist update without changing the handoff cutoff.”
+- “Prepare a handoff summary from my recent journal entries.”
+
+In hosts with `$` invocation, use `$mood-journal`. A session save request authorizes the agreed journal write; it does not authorize sending records to others. “Don't save this” is honored, while the host's independent chat-retention behavior remains outside the skill's control.
+
+## Importing earlier chats and upgrading storage
+
+Ask: “I have connected storage now. Import the earlier journal conversations in this project into it, preserving dates and sources.” The skill inventories accessible sources, replays sessions chronologically, and builds the same canonical journal entries, supported context revisions, inquiry records, and indexes that the live workflow would have maintained. It verifies each record and keeps an old-to-new locator ledger. Transcripts and a synthesis queue alone do not count as completion. Existing chats and memory remain intact. A partially migrated history stays explicitly partial. Installing the plugin alone never triggers migration. To opt in, say “Automatically migrate this project’s journal history when my chosen storage becomes available.” The skill records the scope/destination and checks on later session starts/resumes. It does not run while no conversation is active.
+
+If the host cannot enumerate or read previous project chats, use an explicitly selected export/transcript set. The optional `skills/mood-journal/scripts/ingest_chats.py` inside the plugin accepts a ChatGPT conversations export and an explicit JSON array of chat IDs. It produces full selected source snapshots, readable active-branch transcripts, a source ledger, and a synthesis queue. It does **not** generate semantic journal summaries itself; the skill performs that second phase against the sources. Python is optional and is not required when native tools can perform equivalent operations.
+
+```bash
+python3 plugins/mood-journal/skills/mood-journal/scripts/ingest_chats.py conversations.json --ids-file selected-chat-ids.json --output /your/private/journal/import-2026-09-12
+```
+
+Use a new private output directory, outside this public repository. `selected-chat-ids.json` must contain only the conversation IDs selected for import, for example `["fictional-chat-1"]`. Export structure can vary; unsupported structures fail explicitly. Original exports remain untouched. See [historical ingestion](plugins/mood-journal/skills/mood-journal/references/history-ingestion.md) for source completeness, branch handling, resumability, and handoff boundaries.
+
+## Repository layout
+
+```text
+.agents/plugins/marketplace.json
+.github/workflows/{ci,release}.yml
+plugins/mood-journal/
+  plugin.json
+  .codex-plugin/plugin.json
+  assets/{logo.png,logo.svg}
+  skills/mood-journal/
+    SKILL.md
+    agents/openai.yaml
+    references/{storage,records,inquiries,handoffs,prompts,history-ingestion}.md
+    scripts/ingest_chats.py
+    LICENSE
+    NOTICE.md
+scripts/{validate,release}.py
+tests/
+submission/
+docs/native-storage-research.md
+README.md  CHANGELOG.md  LICENSE  NOTICE.md  PRIVACY.md  TERMS.md
+```
+
+## Release artifacts
+
+| Artifact | Purpose |
+| --- | --- |
+| `mood-journal-VERSION-directory.zip` | Portable plugin root, OpenAI metadata, all skills/resources, logo, and notices; no development scripts or local marketplace. |
+| `mood-journal-VERSION-skills.zip` | Self-contained skill bundle for a skills upload/install surface. |
+| `mood-journal-VERSION-marketplace.zip` | Repository catalog plus plugin tree and documentation for desktop/workspace distribution. |
+| `mood-journal-VERSION-submission-kit.zip` | Listing worksheet, positive/negative test cases, policy drafts, logo, prompt preview image, and test-result worksheet. |
+| `RELEASE-NOTES.md` | Incremental changes from commit subjects. |
+| `BUILD-INFO.json` | Version, source commit, dirty-tree status, and artifact hashes. |
+| `SHA256SUMS` | SHA-256 checksums for all generated deliverables above. |
+
+Archive contents are explicit and drawn from tracked paths. Every ZIP is checked for corruption. Identical inputs produce identical ZIP bytes. Do not commit sensitive files even within allowlisted paths. GitHub's automatic source archives are separate and are not the recommended portal upload.
+
+## Manual releases and versioning
+
+Requires Python 3.11+, Git, and GitHub CLI in the release environment. GitHub-hosted Ubuntu provides the latter two; the workflow selects Python. The plugin runtime needs none of these.
+
+After pushing to a fresh GitHub repository with `main` as default branch, open **Actions → Release → Run workflow**. Default `publish=false` builds downloadable Actions artifacts without pushing a release. Set `publish=true` to commit version/changelog changes, atomically push the default branch and new tag, then create a GitHub draft, upload artifacts, and publish it. The release workflow is only `workflow_dispatch`; CI on push/PR does not publish. [Manual workflow guidance](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/manually-run-a-workflow).
+
+Versions use strict-SemVer-compatible UTC calendar versioning `YEAR.(MONTH*100+DAY).SEQUENCE`. Examples: `2026.912.0`, another release that day `2026.912.1`, and January 2 `2027.102.0`. Numeric components have no leading zeroes. Every existing same-date tag reserves its sequence, including unpublished tags.
+
+The baseline is the newest published, non-draft, non-prerelease GitHub release by publication time whose tag is an ancestor of the selected commit. All release pages are fetched. An initial release uses all history. Each later release lists only commits after its baseline; ordinary and Conventional Commit subjects both work. Tool-generated `chore(release): v...` commits are excluded. No new content means no release. An unrelated release history fails rather than silently generating an initial changelog.
+
+The workflow serializes releases. Publishing requires default-branch dispatch and `contents: write`; branch/tag rules must allow that push. It does not bypass branch protection. If a concurrent push occurs, Git's atomic non-force push fails rather than overwriting it. If repository policy forbids bot pushes, leave publishing disabled until the maintainer arranges an authorized release branch/update process.
+
+For local artifact checks after committing the source:
+
+```bash
+python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
+python3 scripts/release.py build
+```
+
+`build` packages the current version without inventing a published release. To test version preparation in a disposable clone, provide a JSON array of real GitHub release metadata (`[]` only for a confirmed first release), then run `python3 scripts/release.py prepare --releases-json releases.json`. Preparation requires a clean tree and changes both manifests plus CHANGELOG.md. Build metadata records whether the source tree was modified.
+
+If publishing fails after the atomic push, preserve the tag. Download that run's artifacts and use GitHub's release UI to create/complete the draft for the existing tag, upload the exact artifacts, paste RELEASE-NOTES.md, and publish after checking them. Do not delete/reassign the tag or rerun version preparation as a recovery shortcut. If failure occurred before the push, rerun normally. Public plugin updates still require the directory's review process; a GitHub release does not update that directory automatically.
+
+## Validation
+
+```bash
+python3 scripts/validate.py
+python3 -m unittest discover -s tests -v
+python3 scripts/validate.py --submission
+```
+
+The first two validate package invariants and release behavior. The last deliberately fails until publisher metadata, actual platform tests, and attestations are completed. It is a local completeness gate, not OpenAI's validator. [Behavioral scenarios](tests/behavioral-scenarios.md) cover save timing, missing storage, exact quotes, interruption, privacy, and handoff cutoff handling. Live cloud/mobile tests are explicitly **not run** in the initial kit.
+
+## Privacy and clinical boundaries
+
+The plugin contains no journal data and runs no background collection. It preserves distinctions between historical and current state, self-report and interpretation, and unassessed and absent findings. It does not diagnose, prescribe, or send clinician reports automatically. See [PRIVACY.md](PRIVACY.md) and [TERMS.md](TERMS.md). Public publisher URLs and identity need completion before directory submission.
+
+## License and provenance
+
+CC BY-SA 4.0, retaining attribution to Sunny Patneedi's Claude Starter Kit and the local journaling adaptation. [NOTICE.md](NOTICE.md) records changes and source-file hashes; [LICENSE](LICENSE) identifies the terms. No personal journal, medical history, private record IDs, or account configuration is included. User-created journals are not licensed by this package.

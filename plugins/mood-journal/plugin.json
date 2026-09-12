@@ -1,0 +1,37 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "mood-journal",
+  "version": "2026.912.0",
+  "description": "Reflective journaling with adaptable persistent project, memory, or file storage.",
+  "author": {
+    "name": "Mood Journal contributors"
+  },
+  "license": "CC-BY-SA-4.0",
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Mood Journal",
+        "shortDescription": "Reflect and journal with the storage you have",
+        "longDescription": "User-led journaling, brief mood updates, future inquiry topics, and clinician summaries. Uses native project context, single-file memory, local projects, or authorized storage tools. Clearly distinguishes verified records, summary memory, retained chat entries, and pending saves.",
+        "developerName": "Mood Journal contributors",
+        "category": "Productivity",
+        "capabilities": [
+          "Read",
+          "Write",
+          "Interactive"
+        ],
+        "defaultPrompt": [
+          "Help me journal about today.",
+          "Log a brief mood update.",
+          "Prepare a summary for my next appointment."
+        ],
+        "logo": "./assets/logo.png",
+        "composerIcon": "./assets/logo.png",
+        "brandColor": "#173F3A",
+        "screenshots": [
+          "./assets/example-prompts.png"
+        ]
+      }
+    }
+  }
+}

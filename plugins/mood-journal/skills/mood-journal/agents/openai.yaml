@@ -1,0 +1,6 @@
+interface:
+  display_name: "Mood Journal"
+  short_description: "Reflective journaling with verified persistent storage"
+  default_prompt: "Use $mood-journal to help me reflect on today and record it in my chosen journal."
+policy:
+  allow_implicit_invocation: true
