@@ -14,6 +14,17 @@ Offer an optional `require_project` policy with an allowed project identity. Thi
 
 Do not assume project-only memory makes a storage plugin project-restricted. The backend's actual access controls and the journal's authorized scope remain separate. Tools, project identity, and saved preference retrieval may differ across mobile, voice, and cloud surfaces; disclose unverified enforcement rather than claiming a security guarantee.
 
+
+### Projects as organization
+
+Support ChatGPT Projects as an explicit organizational choice for related journal chats, instructions, and source material. Also support a storage backend's project, collection, folder, notebook, or local directory as an organizational destination when exposed. These are separate containers: a ChatGPT Project does not automatically identify or create a backend project.
+
+Record the selected journal's organizational memberships and exact locators when known, separately from its stable journal ID and canonical storage destination. A project can organize more than one journal; ask for the intended journal only when ambiguous. A journal can remain the same journal after moving or renaming a project. Cross-project use of one journal requires the user's authorized scope and available tools; never infer it from a matching name. A require-project policy still limits where that journal may be used until explicitly changed.
+
+Reuse the user's chosen project structure for source organization, journal indexes, and backend collections. Create or move organizational containers only when requested or clearly included in authorized setup, using actual exposed tools. If native ChatGPT project creation/moving is unavailable, explain the user-facing organization step without claiming it occurred. This optional setup step does not make manual Save-to-project part of normal journal saving.
+
+Project-scoped historical import may inventory accessible project chats when authorized, then associate eligible sources with the selected journal. Preserve project provenance, selection boundaries, and ordinary record schemas. Never merge all journals within a project, move unrelated content, or broaden a project-only import to account history. Organization changes alone do not migrate storage or authorize old-source cleanup.
+
 ## Backend choice and defaults
 
 Inventory capable installed storage plugins and exposed native options, including native files, full memory records, summary memory, retained conversations, and local project storage where available. Describe each option's actual persistence, completeness, read-back, and cross-device limits. Installation without usable authorized storage operations does not count as a capable plugin.

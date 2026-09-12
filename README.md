@@ -65,6 +65,10 @@ Historical import outside projects accepts explicitly selected chats, exports, o
 
 Users may opt into a require-project policy for a journal. The skill checks trusted host project identity and pauses journal retrieval, writes, and migration outside the allowed project or when identity is unknown. This is behavioral enforcement, not a directory manifest restriction or security boundary. It does not prevent host chat retention; an explicit user policy change can disable it. No such restriction is enabled by default.
 
+### Projects remain supported for organization
+
+Use a ChatGPT Project to organize related journal chats, instructions, and sources, and optionally a backend project/folder/collection to organize stored records. These are separate containers. Track organizational membership independently from journal identity and storage routing, so renaming or moving a project does not create a new journal. A project may contain several distinct journals; do not merge them automatically. Project-scoped imports remain available, with explicit source and journal boundaries. Creating/moving native projects depends on actual host tools; optional organization setup never becomes a manual per-entry saving requirement.
+
 ## Storage and cross-device support
 
 | Destination | Requirement/status |

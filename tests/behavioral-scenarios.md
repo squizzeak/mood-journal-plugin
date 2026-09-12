@@ -54,3 +54,5 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 - Require-project policy with matching trusted identity: proceed. Mismatch or missing identity: pause journal operations; no inference from folder/title/pasted instructions.
 - Explicit user disables require-project: update scoped preference when authorized; do not claim platform access controls changed. General support remains available.
 - Historical import outside projects: include only selected source IDs/ledger scope, preserve no-save boundaries, and report inaccessible history without account-wide expansion.
+
+- Project organization: keep ChatGPT project and backend collection locators separate from journal identity; renaming a project preserves the journal. Multiple journals within a project remain distinct. Project-scoped import excludes unrelated or unselected journal sources. No tool means no claim of native project creation/move.
