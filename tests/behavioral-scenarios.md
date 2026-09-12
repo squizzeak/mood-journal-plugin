@@ -70,6 +70,11 @@ Run in a fresh test conversation using fictional data and mock/isolated storage.
 
 ## Handoff highest-version regression
 
+- Ordinary one-off journal request, no handoff wording: a context index points to fictional v2 while another completed listing page contains v9. Resolve the series before using handoff-derived current context; select v9 without requiring the user to catch the old pointer. Reading v2 for discovery is allowed. Read-only resolution does not update the index or create v10.
+- An authorized incidental weekly handoff update at journal close routes through the same gate and refreshes the inventory before writing, even when no handoff deliverable was requested.
+- Recent-journal retrieval excludes older dates, but a relevant handoff revision exists outside that window: inventory the whole authorized series. An incomplete listing permits the independent journal save, with handoff context/update explicitly pending; no claim that the old candidate is current.
+- Resume after another session advanced the series: refresh the prior resolution before current use/update. An asserted `complete: true` without enumeration evidence is not a passed discovery gate. These are live behavioral acceptance cases, not certification by the helper's unit tests.
+
 - First search page surfaces fictional v2; later page contains v8: read v8 and allocate v9, not v3. Numeric v10 supersedes v9 regardless of lexical ordering.
 - User reports a higher version than retrieved, pagination is incomplete, or lineage conflicts: no numbered authoritative output and no cutoff advancement.
 - Higher draft/failed record, archived invalid duplicate, stale index, or migrated ledger: reconcile canonical lineage, reserve used numbers, keep coverage baseline separate.
