@@ -32,6 +32,8 @@ Explain storage separately, covering the available choices and briefly noting un
 
 For the proposed destination state where records will live, whether full text is preserved, what read-back can verify, and whether cross-device access is tested or unknown. Apply the user's requested defaults from storage.md: one capable plugin suggests that plugin; multiple suggest capable native storage; keep existing choices. Explicitly ask the user to accept the suggestion or choose another option. Defaults guide the choice, not bypass it.
 
+Explain that full therapist handoff entries require complete series enumeration, stable entry identity, separate entry creation, and read-back/series verification. Basic journaling can work in modes that cannot safely create handoff entries. In such modes, intermediate reports remain chat-only and non-consuming. Disclose path/checksum identity and concurrency limitations when relevant, without implying that partial memory is an exhaustive handoff archive.
+
 ## Acquire and record preferences
 
 1. Explain scope modes and ask which the user prefers. Resolve an organizational/required project only if selected; do not require project creation for ordinary-chat use.

@@ -1,60 +1,72 @@
-# Clinician handoffs and source packets
+# Therapist handoff entries and source packets
+
+## Entry-series contract
+
+A therapist handoff is a separately stored handoff entry with its own stable entry ID or backend record ID, creation timestamp, content, provenance, source ledger, and coverage fields. Related entries form an ordered handoff series. Sequence numbers describe order, not file changes. Preserve predecessor entries unchanged.
+
+Use exactly `<handoff-series-title> — Entry <N>`, for example:
+
+- `Weekly Therapist Handoff — 2026-09-07 — Entry 1`
+- `Weekly Therapist Handoff — 2026-09-07 — Entry 2`
+- `Therapist Handoff — September 2026 — Entry 1`
+
+Structured metadata is authoritative. The title must agree with it. The complete field contract and fictional example are in [handoff-entry-schema.md](handoff-entry-schema.md). Use `supersedes_entry_id` only for an explicit correction or replacement of an earlier entry's clinical-continuity role, with a correction reason; ordinary succession uses only predecessor fields.
+
+## Storage capabilities and identity
+
+Use any authorized durable framework: apps/connectors, note systems, files, databases, agent-memory services, or other adapters. Require the ability to enumerate all entries in the exact series, exhaust pagination or equivalent traversal, inspect metadata, retrieve entries in full, create a separate entry, retrieve it, and verify the resulting complete series. A single file or full memory item qualifies only if it can preserve separately identified entry objects and all prior objects unchanged and support complete traversal and read-back. Summary memory or partial chat recall is insufficient for entry creation.
+
+Prefer a stable entry ID or backend record ID. Where neither exists, use an immutable normalized path plus a cryptographic content checksum and retain that identity in predecessor links. For a container holding multiple objects, the identity must also distinguish the immutable entry object; a changing whole-container checksum is not a stable predecessor locator. Disclose reduced identity and concurrency guarantees. If the adapter cannot provide durable identities, full enumeration, or verification, fail closed: create no handoff entry. Independently authorized journaling and a clearly limited, chat-only intermediate report may continue.
+
+Adapter operations are semantic requirements, not vendor API names. The optional [select_handoff.py](../scripts/select_handoff.py) provides executable schema/lineage validation and a reference adapter protocol; Python is not required on cloud or mobile hosts. The primary assistant performs all work directly. Do not delegate.
+
+## Resolve the latest validated handoff entry
+
+Apply this gate whenever a handoff is used as current context: routine journal preflight, one-off logs, incidental handoff updates, explicit summaries, intermediate reports, and resumed sessions.
+
+1. Establish the exact authorized journal and `handoff_series_id` before comparing sequences. Bind the series to its explicit title, user/journal, purpose, and period or coverage scope. Never combine unrelated users, weekly periods, series, or coverage scopes. Adjacent coverage intervals within one established series remain related. A folder name alone neither creates nor resets a series.
+2. Enumerate the complete candidate set across relevant containers and statuses; exhaust every page or equivalent traversal. Do not apply the recent-journal retrieval window to the handoff series. Deduplicate identical observations by stable entry ID; conflicting observations of one ID require a fresh resolution.
+3. Build a private inventory with stable ID, full title, series ID/title, numeric sequence, creation/update timestamps when available, coverage fields, predecessor ID/title, any explicit replacement, validity/invalidation status and reason, source-ledger presence, provenance, and checksum when supported. Record enumeration scope, traversal evidence, and unresolved failures. An asserted completeness flag is not proof of actual traversal.
+4. Require the canonical title and required metadata. Read entries in full. Exclude an entry from continuity only if full content or metadata explicitly marks it invalid, erroneous, incomplete, quarantined, created from the wrong predecessor, or unsuitable for continuity. Keep an invalid branch entry in the audit inventory with its reason. Archived status alone never makes a predecessor invalid.
+5. Compare `handoff_sequence` as positive integers and select the valid entry with the highest sequence number. Retrieve it in full and validate its identity, canonical title, coverage, source ledger, provenance, predecessor chain, and available integrity data. The predecessor must be the immediately preceding validated entry in this series, with an exact ID/title match. The initial handoff entry has no predecessor. No self-reference is allowed.
+6. Use indexes, canonical pointers, caches, timestamps, filenames, and search order only as cross-checks. A pointer to a lower sequence is stale; do not repair it during read-only resolution. Entry 10 follows Entry 9 numerically.
+7. Stop on a duplicate-sequence conflict, title/metadata disagreement, unreadable apparent latest entry, missing or wrong predecessor, ambiguous scope, incomplete traversal, or any failed validation. Return a structured ambiguity report with exact stable IDs, titles, sequence numbers, and failure reasons. Never guess, choose between duplicates, overwrite, delete, archive, invalidate, or create a branch automatically.
+
+Reading an older entry for discovery or dated historical evidence does not make it current. Refresh on resume and before any write; a previous chat's resolution is not a permanent cache. Incomplete context leaves dependent claims and operations pending.
+
+## Coverage, provenance, and source review
+
+Capture actual generation time with timezone/offset and UTC. A normal next entry covers `(predecessor.coverage_end_inclusive, generation time]`; the initial handoff entry uses the explicit requested start or earliest supported source boundary. Store both endpoints, with end after start and no later than entry creation. Do not infer coverage from timestamps or filenames. An explicit correction can revisit earlier coverage, but must identify what it replaces, preserve provenance, and never move the verified cutoff backward.
+
+Read all still-unsummarized handoff source notes and relevant journal entries in the interval, including archived/completed sources where appropriate, deferred sources, new source-record revisions, and corrections not represented by exact ID/revision in the prior source ledger. Include older context needed to explain the current evidence and label it as prior context. Paginate and read sources in full. Missing source reads block claims of complete coverage and prevent entry creation for that claimed interval.
+
+The source ledger records stable source ID/locator, title, kind, source date, update or revision timestamp when available, retrieval time, inclusion role, and omissions. Retain speaker attribution, exact quotations, recollection versus documentation, assistant interpretation, and voice-transcription uncertainty. Missing assessment is not absence of symptoms or risk. Quotes and citations never consume sources by themselves.
 
 ## Choose the requested output
 
-- **Intermediate preview:** Only when explicitly requested as interim/intermediate. Read sources, respond in chat, and make no artifact or durable mutation. Do not consume sources, mark them summarized, advance coverage, or close an ongoing journal conversation.
-- **Summary:** Default for a therapist or clinician handoff. Produce a concise first-person read-aloud Markdown script; use a file if file output is available and authorized, otherwise give the complete draft in chat with its persistence limitation.
-- **Packet:** Only for an explicit packet/source bundle/ZIP request. Produce an expanded PDF overview with full source exports in a PDF-only ZIP when rendering tools exist. If they do not, state the exact missing capability and provide what can be produced without claiming a verified packet.
+- **Summary:** Default full deliverable: a concise first-person read-aloud script, stored as a separate handoff entry after the resolver and source review succeed. A file representation is optional when the backend stores the full entry directly.
+- **Packet:** Only for an explicit packet/source bundle/ZIP request. Create an expanded PDF overview and full searchable source PDFs, a PDF source manifest and verification report in a PDF-only ZIP when rendering tools exist. Include provenance and SHA-256 checksums, inspect every rendered page, compare extracted text with sources, and test ZIP extraction. Missing rendering or verification means pending output, no claimed verified packet or cutoff advancement.
+- **Intermediate report:** Only when explicitly requested. Follow the non-consuming rules below.
 
-Do not send or upload these materials to another person or new service without explicit authorization.
+For a read-aloud script, include generation/coverage metadata, a brief opening, meaningful changes, current mood/body/functioning supported by sources, treatment questions, coping/support, relevant events, requested help, and a closing invitation. Put the source ledger after the spoken sections. Do not send any materials to another person or service without explicit sending authorization.
 
-In single-file mode, the ledger can occupy a section in that file. With only summary memory or retained conversation context, produce a source-limited summary and label incomplete coverage; do not advance a verified full-handoff cutoff or claim exhaustive source inclusion. Never require a connector merely to produce a clearly qualified conversational summary.
+## Create the next entry and commit verification
 
-## Coverage and evidence
+1. Resolve the latest validated handoff entry and prepare source-grounded content.
+2. Immediately before writing, repeat the full series enumeration and resolution. If the predecessor or relevant sources changed, re-resolve and rebuild the content before retrying.
+3. For a genuinely empty series propose sequence 1. Otherwise propose the latest valid sequence plus one. Explicitly search the proposed `(handoff_series_id, handoff_sequence)` pair across all candidates, including invalid entries. If claimed, stop and re-resolve; do not reuse it or silently skip to a higher number.
+4. Create a separate entry using the canonical title. Entry 1 omits predecessor fields or uses null values. Later entries store the latest validated entry's stable ID and exact title. Preserve all prior entries unchanged. Use a stable operation ID for uncertain-save reconciliation; never repeat a create blindly.
+5. Use atomic conditional creation, compare-and-swap, transactions, optimistic concurrency, or a unique series-and-sequence constraint when available. Without atomic support, disclose the limitation, re-enumerate immediately before and after writing, and stop on collision. Single-agent use does not lock other sessions or external editors.
+6. Retrieve the new entry in full and re-enumerate the complete series. Verify that it is the only valid entry with its sequence and the sole valid highest entry; verify title/metadata, correct predecessor, full content, provenance, coverage, source ledger, and available checksums. Compare all prior entries with the pre-write inventory to ensure they remain unchanged.
+7. Only after all output, source, read-back, and series checks pass may a new latest-entry/coverage receipt be created. Preserve all earlier pointer/coverage records unchanged; resolve effective state from the verified receipt chain. Use a conditional append or exclusive receipt creation when possible. Any failure leaves these unchanged; report partial persistence with the exact created ID rather than claiming the write never happened. Do not automatically clean up a conflicting entry.
 
-Capture generation time with timezone/offset and UTC. Complete the version discovery gate below first. Retrieve the latest fully verified handoff record and its explicit coverage end and source ledger. The new interval is `(previous verified coverage end, generation time]`. For an initial handoff use the requested interval or available relevant history, stating the limits. Never infer a cutoff from a filename or last-modified time.
+## Non-consuming intermediate reports
 
-Read every available not-yet-summarized handoff note, including archived/completed notes when appropriate, and journal entries in the interval. Include new revisions of older sources, deferred sources, and material not represented by exact ID/revision in the prior ledger. Retrieve current-context notes and older sources needed to explain corrections, chronology, or current questions. Mark old material as related prior context. Paginate relevant searches, deduplicate by ID, read sources in full, and state missing reads. Do not claim complete coverage from incomplete retrieval.
+An intermediate report renders directly in chat. It may resolve and cite the latest validated handoff entry and review all still-unsummarized source entries, but it must:
 
-Keep a source ledger with title, locator, kind, source date, revision/update time, retrieval time, inclusion role, and omissions. Preserve every eligible handoff note in the evidence review and ledger even when the script condenses it. Separate current and historical self-report, recollection, documentation, quotes, assistant interpretation, and possible patterns. Missing assessment is not absence of risk or symptoms.
+- Create no artifact and no handoff entry; allocate no sequence.
+- Make no storage mutation and update no latest pointer, coverage cutoff, or last-summarization date.
+- Change no tags, statuses, reminders, metadata, or ledgers.
+- Mark no source summarized, consumed, excluded, reviewed-and-consumed, or complete.
 
-## Read-aloud summary
-
-Use short, speakable first-person sentences. Include generation/coverage metadata, a 60-second opening, meaningful changes, present mood/body/functioning, current safety report only if supported, treatment/medication questions, coping/support, relevant events, requested help, and a closing invitation to discuss. Put the source ledger after the spoken sections. Preserve emotionally important wording without turning the script into an unabridged transcript.
-
-For an intermediate preview label its generation time “not a new cutoff”; keep the previous full-handoff baseline unchanged and include source trace and limitations. The next full handoff must reconsider these sources.
-
-## Explicit source packet
-
-Create a descriptive PDF overview, a PDF source manifest, complete searchable PDFs of included source notes/journal entries and materially cited context, and a PDF verification report. Each source has provenance (ID/path, date, revision, retrieval time, status if available). Preserve original wording and voice qualifiers; presentation may change. Use safe filenames and deduplicate sources.
-
-Calculate SHA-256 for every included PDF except the checksum report itself; include values in that report. Render all final PDF pages for inspection, check extracted text against sources, confirm each PDF opens, and verify ZIP extraction and a PDF-only inventory. Do not call an ordinary ZIP encrypted. If any source or visual check is missing, disclose the limitation and do not mark the packet fully verified.
-
-## Highest-version discovery gate
-
-The primary assistant performs this gate directly under the strict single-agent contract. It does not delegate discovery, review, or writes. Revision/conflict checks below protect against stale state, retries, and external edits; they do not make multi-agent use supported.
-
-This gate applies to using a handoff as current context as well as creating a deliverable: ordinary journal preflight, one-off logs, incidental weekly updates, previews, and resumed sessions all route here when they rely on a versioned handoff. Perform discovery and lineage resolution in steps 1–3 before treating a record as current or using its coverage baseline. Read-only use never performs steps 4–6 or repairs a stale pointer. Reading an older candidate during discovery or as explicitly dated history is allowed; silently promoting it to current context is not. Do not limit the series search to the usual recent-journal window.
-
-Keep a compact, private resolution receipt for the current operation: journal/series identity, enumeration scope and completion evidence (including pagination), candidate IDs/numeric versions, selected canonical ID/version, coverage baseline, and unresolved conflicts. A search snippet, cached pointer, user recollection, or helper input containing `complete: true` is not independent evidence that enumeration completed. If the host cannot establish completeness, disclose that current handoff context is unverified and continue only work that does not depend on it. On resume or before an incidental update, refresh discovery; a previous chat's successful resolution is not a permanent cache.
-
-Never continue from the first search hit, a prominent old handoff, lexicographic title ordering, a cached pointer, or the most recently edited record. Before creating or updating a numbered handoff, inventory the complete relevant handoff series in the selected journal and authorized destination. A series has a stable identity; journal, audience/purpose, and any explicitly established series boundary distinguish it from unrelated handoffs. Weekly folders alone do not reset version numbering. If the series boundary is ambiguous, resolve it before allocation.
-
-1. Retrieve the handoff index and enumerate matching records across all pages and relevant containers. Include archived, superseded, draft, failed, and duplicate records when exposed, plus known reserved/deleted-version tombstones in the ledger. An index is a locator aid, not proof of completeness. Check known prior locators and explicit user reports of a higher version. If a user reports v8 while search returns only v2, treat the mismatch as unresolved and search/retrieve further; never silently create v3.
-2. Read candidate metadata and the full selected parent. Resolve version labels as integers: v10 follows v9, regardless of lexical order. Prefer explicit series/version metadata; legacy titles may help discover candidates but require identity/content corroboration. Conflicting metadata/title versions, multiple unexplained records with the same version, forks, or unresolved predecessor links block authoritative allocation. Search rank, update time, filenames, and a backend's own revision number are not handoff sequence numbers.
-3. Track three values separately: highest observed/reserved version (prevents reuse), latest valid canonical parent (preserves the current work product), and latest fully verified coverage baseline (controls which source material has been consumed). An archived erroneous duplicate still reserves its number but is not a valid parent. A higher draft/failed/unverified handoff must be explicitly reconciled or resumed; do not silently fall back to an older parent or treat its coverage as verified. Never skip unresolved source material merely because it appears in a draft.
-4. Allocate the next new version as highest observed/reserved version plus one only when the relevant inventory is complete and canonical lineage is resolved. Follow an explicit resume/retry of the same pending operation instead of allocating a new number unnecessarily. For a genuinely empty, completely inventoried series, start at v1. If listing/pagination or source access cannot establish completeness, offer a clearly unnumbered provisional draft, leave the canonical index/cutoff unchanged, and explain the missing verification. A limited-memory/chat host must not invent a definitive highest version.
-5. Immediately before the write, re-read the index/revision and refresh the inventory for newly created versions. Use a conditional update, transaction, unique version constraint, or exclusive local lock when actually supported. If another writer advanced the series, retrieve that parent and reconcile/rebuild before allocating again. A pre-write recheck is only a best-effort race safeguard when the backend lacks atomic allocation; disclose that limit and never claim a uniqueness guarantee.
-6. After creating the output, read back the exact record, version, parent locator, journal/series identity, source ledger, and coverage state. Reconcile any concurrent duplicate before designating a canonical latest version. On uncertain write/retry, locate the same operation ID first; do not create another version blindly. Only then update the canonical index under the commit-point rules below. Preserve old records and report conflicts; do not automatically archive/delete them without applicable authorization.
-
-Persist a minimal ledger with journal ID, handoff series ID, stable operation ID, handoff version, parent handoff ID/version, canonical disposition, generation time, output verification state, coverage baseline ID/end, included source IDs/revisions, and supersession/reservation records. Keep handoff version distinct from record schema version, backend revision, and plugin release version. Backend migration and historical ingestion preserve series identities and reserved numbers; they do not restart the handoff sequence or manufacture historical verification.
-
-Example using fictional data: a search returns v2 first, but the complete inventory contains valid v8. Retrieve v8 and produce v9, not v3. If valid v10 also exists, produce v11. If v11 is an unresolved draft, reconcile that draft before assigning another authoritative version. If only v2 is retrievable and a higher version is known to exist, stop numbered creation rather than guessing.
-
-The optional [select_handoff.py](../scripts/select_handoff.py) validates a normalized complete inventory and computes a candidate parent/next version. It does not discover records, establish completeness, perform writes, resolve conflicts, or replace pre-write concurrency checks. Native-only hosts must apply the same gate through their exposed tools; Python is optional.
-
-## Versioning and commit point
-
-Preserve a separately dated handoff version, optionally grouped by local ISO week, with coverage metadata and source ledger. In a memory service, persist and re-read its exact ID; in an authorized local store, reopen the final file. An additional local copy is not mandatory when the selected backend alone holds the verified deliverable. For a packet, verify its files as well.
-
-Only after the output and its durable handoff record are verified, and source retrieval is complete for the claimed interval, update the authorized handoff index/current summary to the new coverage end. Preserve historical versions. If storage or verification is missing, leave the cutoff unchanged and report pending status. A newer generation time alone never advances it. Report artifact/record locators, counts of included handoff notes and journals, related sources, and omissions. Weekly organization does not authorize a background schedule.
+Include source citations, exact stable IDs, source dates, update/revision timestamps, and selective direct quotes as useful. Preserve speaker attribution, context, provenance, and uncertain voice wording. Label the report generation time as not a new cutoff. The next full handoff must reconsider these sources. A report neither closes a live journal session nor authorizes staged saves. If discovery is incomplete, label the report source-limited without claiming a latest validated entry.

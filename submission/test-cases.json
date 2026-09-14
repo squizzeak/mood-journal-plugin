@@ -4,7 +4,7 @@
       "id": "P1",
       "prompt": "Help me journal about today.",
       "fixture": "Established retained native project conversation; no separate storage plugin.",
-      "expected_behavior": "Identify native project-chat mode, ask the user-led opening, and stage final synthesis until explicit close.",
+      "expected_behavior": "Identify native project-chat mode, offer the mandatory current-session safety check one question at a time, then ask the user-led opening; stage final synthesis until explicit close.",
       "expected_result": "Conversation with no premature write."
     },
     {

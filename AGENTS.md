@@ -26,6 +26,10 @@ Review tracked content and proposed commit messages before pushing; releases der
 
 ## Runtime invariants
 
+- Never overwrite existing runtime entries or their metadata. Corrections, dispositions, and durable pointer/ledger changes create linked entries/events. Optional source deletion requires explicit target scope and verified full transfer, links, and routing; retain originals by default. Skill-source edits require the user's separate authorization.
+
+- Every conversational journaling session includes the mandatory current-safety check in references/safety.md. Respect declined answers, record unknowns faithfully, and preserve explicit-close/no-save boundaries; this is not a clinical screening certification.
+
 - Strict single-agent chat interaction: no sub-agents, delegated read-only review, cross-chat dispatch, or background agent workers. Direct tools and deterministic helpers are permitted. Future delegation requires an explicit product decision.
 - Projects are optional organizational containers. Stable journal identity is independent of chat, project, and backend. Preserve source scope and separate journals.
 - Informed setup explicitly acquires missing preferences after explaining available capabilities and tradeoffs. Reuse existing explicit choices. Defaults are recommendations, not consent.
@@ -35,7 +39,7 @@ Review tracked content and proposed commit messages before pushing; releases der
 - Optional require-project behavior is not a security boundary. Unknown trusted project identity pauses restricted operations; do not claim host permissions or a global session lock.
 - Historical import produces normal canonical journal work, with original dates, provenance, supported context/inquiry state and explicit gaps. Do not manufacture missing quotes, past verification or clinician coverage.
 - Migration preserves IDs and source history, verifies destination before routing cutover, and performs only explicitly scoped optional cleanup afterward. Lossy migration cannot justify deletion of full originals.
-- Handoff creation requires complete highest-version discovery, numeric ordering, resolved canonical lineage and separate verified coverage baseline. First search hit is insufficient. Incomplete inventory means provisional unnumbered output; no cutoff advancement.
+- Handoffs are separate entries in an explicit series, titled `<handoff-series-title> — Entry <N>`. Structured sequence metadata, complete numeric latest-entry resolution, predecessor validation, and verified source coverage govern creation. Fail closed on incomplete enumeration, duplicate-sequence conflicts, or invalid lineage. Intermediate reports are chat-only with zero mutations or source consumption.
 - Preserve user wording, uncertainty, chronology and current-versus-historical evidence. Do not diagnose, infer another person's intentions, or transmit handoffs to others without explicit sending authorization.
 
 ## Metadata and compatibility
@@ -65,7 +69,7 @@ GitHub Actions is the authoritative source of initial and subsequent distributed
 
 Only `.github/workflows/release.yml` workflow_dispatch may publish a GitHub release. The separate submission-preparation workflow may run after a published release to verify assets and prepare drafts; it must not submit to OpenAI or perform attestations. Optional Copilot editorial generation is development automation over public release text, not runtime journal delegation; keep it opt-in, without delegation or permitted tools, and document billing. Do not purchase or enable paid usage implicitly. CI on pushes/PRs validates but must not publish. Default dispatch is build-only. Publish only after explicit authorization and from the default branch. Do not bypass branch protections. Minimize workflow permissions, quote shell variables, and keep untrusted commit subjects as data.
 
-The workflow owns UTC CalVer versions and CHANGELOG.md release sections. Until the first Actions publication, keep only the unpublished changelog placeholder; the initial workflow derives notes from all non-release commits. Subsequent notes use commits after the latest applicable published stable release. Never invent a prior release from a local build or draft.
+The workflow owns UTC CalVer versions and CHANGELOG.md release sections. Maintain an Unreleased section for pending changes; the initial workflow derives release notes from all non-release commits. Subsequent notes use commits after the latest applicable published stable release. Never invent a prior release from a local build or draft.
 
 Preserve the four allowlisted packages (directory, skills, marketplace, submission kit), release notes, provenance and checksums. Package tracked allowlisted paths only; reject symlinks and unsafe archive paths. GitHub's automatic source archive is not the directory upload package.
 

@@ -21,6 +21,8 @@ For unaddressed core areas use “Not discussed in this session.” Missing info
 
 Optional headings: Key direct quotes; Safety-relevant self-report; Possible longitudinal context; Possible clinician follow-up; User-requested session agenda; Journal-inquiry reminders; Assistant reflection or open question.
 
+For conversational journaling, Safety-relevant self-report is required: record the actual current-session check and response, timestamp when known, declined/unanswered domains, and any material follow-up or unresolved concerns using [safety.md](safety.md). Never fill missing answers with a denial or infer safety from historical records. Self-contained logs do not require invented screening data.
+
 Record current self-report separately from historical context, recalled speech, direct quotations, documented communication, assistant reflection, and possible patterns. Cite prior record dates and locators for comparisons. Clinician follow-up is a question or topic, not an invented diagnosis or professional recommendation.
 
 ## Quotes and voice
@@ -30,5 +32,7 @@ Quote selectively when exact wording preserves emotional or clinical meaning, bo
 For uncertain voice transcripts retain “Voice transcript; wording may be imperfect,” with `[unclear]` or a narrow possible wording. Do not silently repair consequential words. Carry these qualifiers into every later handoff. Assistant formulations must never become purported user quotations.
 
 ## Save confirmation
+
+Therapist handoffs use their own [entry-series schema](handoff-entry-schema.md) and [workflow](handoffs.md), not the mood-journal record headings above. Store each full handoff as a separately identified entry; ordinary succession preserves its predecessor unchanged. An intermediate report creates neither a journal entry nor a handoff entry and changes no source state.
 
 A verified response should identify the title and exact backend ID, link, or local file path. If journal verification succeeds but another update fails, say exactly which operation remains pending. If nothing was written, provide the complete draft as unsaved, not a fabricated saved-entry ID. Do not present metadata such as `verified: true` before the read-back succeeds.

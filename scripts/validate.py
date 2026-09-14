@@ -7,7 +7,23 @@ from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[1]
 
+def validate_readme_links(root):
+    """Check local README targets and heading anchors without network access."""
+    readme = root / 'README.md'
+    text = re.sub(r'```.*?```', '', readme.read_text(), flags=re.S)
+    for target in re.findall(r'\]\(([^)]+)\)', text):
+        if '://' in target:
+            continue
+        filename, _, anchor = target.partition('#')
+        path = readme.parent / filename if filename else readme
+        assert path.is_file(), f'Missing README target: {target}'
+        if anchor:
+            headings = re.findall(r'^#+\s+(.+)$', path.read_text(), re.M)
+            anchors = {re.sub(r'[^\w\- ]', '', h.lower()).replace(' ', '-') for h in headings}
+            assert anchor in anchors, f'Missing README anchor: {target}'
+
 def validate(root=ROOT, submission=False):
+    validate_readme_links(root)
     plugin=root/'plugins/mood-journal';skill=plugin/'skills/mood-journal'
     portable=json.loads((plugin/'plugin.json').read_text())
     compat=json.loads((plugin/'.codex-plugin/plugin.json').read_text())

@@ -10,9 +10,9 @@ At full-session preflight retrieve the relevant active inquiry queue, paginate a
 
 - addressed: meaningfully discussed and the user indicates completion;
 - deferred: keep active for later;
-- retired: the user clearly no longer wants it; archive using the backend's convention;
+- retired: the user clearly no longer wants it; create a linked retirement event, preserving the original;
 - not reached: keep active and report it without prolonging the session.
 
-Mere discussion does not prove completion. If unclear, ask once whether to complete or keep the inquiry, unless the user asked to end immediately; then leave it active. Apply and verify completion/archive transitions only after the journal save is verified. Include item IDs and dispositions in the journal. A failed transition remains pending. Do not create new inquiries automatically from inferred open loops or unfinished agenda items.
+Mere discussion does not prove completion. If unclear, ask once whether to complete or keep the inquiry, unless the user asked to end immediately; then leave it active. Create and verify linked completion/retirement events only after the journal save is verified; never modify the original reminder's status or content. Retrieve disposition events with original reminders so completed topics are not presented as active. Include item IDs and dispositions in the journal. A failed transition remains pending. Do not create new inquiries automatically from inferred open loops or unfinished agenda items.
 
 In single-file mode store inquiries in a dedicated section and verify the edited record. In native retained-conversation mode, record a dated inquiry/disposition in the conversation with an explicit best-effort retrieval limit. Do not call it an independently verified reminder or a guaranteed future notification.

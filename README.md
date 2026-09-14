@@ -15,7 +15,7 @@ A single-agent, storage-neutral journaling skill for ChatGPT and compatible skil
 ## Table of contents
 
 - [Single-agent chat operation](#single-agent-chat-operation)
-- [Handoff version integrity](#handoff-version-integrity)
+- [Handoff entry series](#handoff-entry-series)
 - [Informed first-use setup](#informed-first-use-setup)
 - [Overview](#overview)
 - [Capabilities](#capabilities)
@@ -34,6 +34,8 @@ A single-agent, storage-neutral journaling skill for ChatGPT and compatible skil
 
 ## Overview
 
+**Existing entries are never overwritten.** Corrections, continuations, context changes, reminder dispositions, and durable pointer/ledger changes use new timestamped entries linked to the originals. Safe append is allowed only when existing bytes and entries remain unchanged; otherwise create a separate record or leave the save pending. Migration and comparable explicitly requested transfers may optionally delete only explicitly scoped source entries after full destination, reference, and routing verification. Originals are retained by default, and lossy or incomplete copies never qualify for deletion.
+
 Mood Journal is a skills-only plugin: instructions and resources, without an MCP server, account, telemetry, executable runtime hook, or hosted journal service. It adapts to capabilities the host actually exposes. The release tooling runs only during development or GitHub Actions; Python, Git, and GitHub CLI are not journaling runtime requirements.
 
 The portable `plugin.json` identifies the package. An OpenAI presentation extension and a matching `.codex-plugin/plugin.json` compatibility manifest provide discovery metadata. A repository marketplace supports GitHub import and local testing. [Official package documentation](https://developers.openai.com/plugins/build/plugins).
@@ -46,12 +48,13 @@ The portable `plugin.json` identifies the package. An OpenAI presentation extens
 | Impromptu reflection | Recognizes a sustained personal reflection without restarting it. | Obtains journal intent if unclear; does not silently record emotional conversation. |
 | One-off updates | Saves an intentional brief mood, health, or event log. | Usually no follow-up or numeric-rating demand; compact entry. |
 | Holistic context | Connects reported emotions, body state, sleep, energy, relationships, coping, and functioning. | Does not infer unreported symptoms or medication adherence. |
+| Mandatory session safety check | Briefly asks about current suicide/self-harm thoughts and immediate physical danger early in every conversational journaling session. | Respects declined answers, follows up on current concerns, and records unknowns faithfully; not a clinical assessment or safety guarantee. |
 | Continuity | Retrieves relevant recent records and current corrections. | Today's report outranks history; one relevant continuity bridge at a time. |
 | Agenda coverage | Tracks covered, deferred, withdrawn, and unreached topics. | Respects the user's end; does not create reminders automatically. |
 | Exact wording | Preserves meaningful quotes and voice uncertainty. | Separates direct report, recalled speech, and assistant reflection. |
 | Verified persistence | Uses stable session IDs, duplicate checks, exact reads, and safe updates. | Reports partial failure accurately; never confuses acknowledgement with verification. |
 | Future inquiries | Stores topics to revisit in a future session and tracks dispositions. | Undated topics are not scheduled notifications. |
-| Clinician summary | Creates a concise first-person speaking script with sources. | Preserves dated versions and an explicit verified coverage interval. |
+| Clinician summary | Creates a concise first-person speaking script with sources. | Preserves separate handoff entries, predecessor links, and verified coverage intervals. |
 | Intermediate preview | Gives a read-only handoff progress report in chat. | No artifacts, source consumption, or cutoff movement. |
 | Source packet | On explicit request, assembles an overview and full-source PDF-only ZIP. | Requires rendering/export tools, page inspection, text checks, and checksums. |
 | Optional exercises | Offers free writing, gratitude, decision reflection, or periodic reviews. | No forced positivity, regimen, or promised clinical outcome. |
@@ -61,6 +64,8 @@ The portable `plugin.json` identifies the package. An OpenAI presentation extens
 | Voice recovery | Preserves original timestamps and staged synthesis across interruptions. | Disconnection is not permission to save. |
 
 Full entries use stable headings for session details, synthesized account, mood, events, bodily context, coping/functioning, needs/follow-up, and provenance. One-off updates stay short. Unsupported domains remain explicitly unknown or not discussed. The complete behavior is in [SKILL.md](plugins/mood-journal/skills/mood-journal/SKILL.md) and its linked references.
+
+Full sessions and impromptu journaling discussions include the [mandatory safety check](plugins/mood-journal/skills/mood-journal/references/safety.md), including voice, mobile, and unsaved modes. The assistant asks early, one question at a time, uses answers already supplied in the current session, attends to changing cues, and reviews safety before closing. Users may decline; missing answers are never treated as denials. Self-contained logs and administrative tasks do not independently trigger the conversational check. Immediate danger takes priority over routine journaling, and discussion-derived storage still waits for explicit close.
 
 
 ## Projects are optional
@@ -179,7 +184,7 @@ plugins/mood-journal/
   skills/mood-journal/
     SKILL.md
     agents/openai.yaml
-    references/{setup,storage,records,inquiries,handoffs,prompts,history-ingestion}.md
+    references/{setup,storage,records,safety,inquiries,handoffs,handoff-entry-schema,prompts,history-ingestion}.md
     scripts/{ingest_chats,select_handoff}.py
     LICENSE
     NOTICE.md
@@ -254,12 +259,24 @@ The skill explicitly asks for operational preferences before first journal-histo
 
 Setup records the selected journal, project preference, backend, saving behavior and manual/disabled/automatic historical-import policy. It explains save timing and the absence of a guaranteed background import listener. Previously explicit choices are reused; only missing or materially changed preferences require questions. Users can say “show my journal settings,” “explain the modes,” or “change my journal setup.” Configuration is conversational and stored in authorized journal storage where possible; there is no custom installer, native settings panel, or permission toggle. Configuration writes do not save unfinished journal content or authorize historical copying/deletion. Unverified preference persistence is disclosed.
 
-## Handoff version integrity
+## Handoff entry series
 
-Before using a handoff as current context or updating one, including during ordinary journaling and incidental weekly updates, the skill inventories the complete relevant series, including archived/reserved versions, and compares sequence numbers numerically. It must not branch from an old first search result: fictional v2 followed by a discovered v8 yields v9. Canonical parent, highest reserved number, and verified coverage baseline are tracked separately. Unresolved drafts, duplicate versions, missing lineage, or incomplete retrieval block authoritative numbering and leave coverage unchanged. The skill refreshes the inventory before writing, uses atomic allocation when available, and verifies the final record/index. Without atomic backend support, race prevention is best effort and is disclosed. An optional dependency-free inventory checker and fictional regression tests exercise selection; no Python runtime is required for native skill use. Older records may be read for historical evidence or discovery without being treated as current. Incomplete discovery leaves dependent handoff claims and updates pending while independent authorized journaling can continue. The skill records enumeration evidence and refreshes on resume; a helper completeness flag alone cannot verify discovery. These instructions and deterministic tests do not guarantee live conversational compliance; acceptance testing remains required.
+Each full therapist handoff is an independently stored **handoff entry**, with a stable ID, creation timestamp, complete content, provenance, source ledger, and coverage interval. Related entries form an explicitly identified **handoff series**. Use exactly `<handoff-series-title> — Entry <N>`, such as `Weekly Therapist Handoff — 2026-09-07 — Entry 1` and `Weekly Therapist Handoff — 2026-09-07 — Entry 2`.
+
+Structured `handoff_series_id` and positive integer `handoff_sequence` determine membership and order. The title must agree. Entry 1 has no predecessor; every later entry records the preceding validated entry's stable ID and exact title. Predecessor entries remain unchanged. `supersedes_entry_id` is reserved for an actual correction or replacement of clinical-continuity content, with an explicit reason.
+
+The resolver exhausts all pages or equivalent traversal within the authorized series, deduplicates by stable ID, reads full entries, and compares sequences numerically. Entry 10 follows Entry 9. Search order, modification time, filenames, and cached pointers cannot identify the latest entry; a pointer to Entry 8 is stale if enumeration validates Entry 10. Archived entries remain eligible. Explicit invalid branch entries remain in the audit inventory, with the documented reason for exclusion.
+
+A duplicate-sequence conflict, wrong/missing predecessor, title mismatch, ambiguous series, or incomplete retrieval blocks creation and yields exact IDs, titles, sequences, and failure reasons. The skill never chooses a branch or cleans up conflicting entries automatically. Before creation it repeats enumeration and explicitly checks that the proposed series/sequence pair is unclaimed; after creation it verifies the full new entry and that all predecessors remain unchanged. Only then may the latest pointer and coverage cutoff advance.
+
+Apps, connectors, note systems, local files, databases, and agent-memory services qualify by actual capability. The backend must enumerate the complete series, inspect metadata, retrieve full entries, create a separate entry, and verify it and the series afterward. Without stable IDs, an immutable normalized entry path plus cryptographic content checksum can provide fallback identity, with reduced identity and concurrency guarantees. Atomic conditional creation, transactions, or a unique series/sequence constraint are preferred; otherwise pre/post enumeration detects some collisions but cannot eliminate races. Insufficient capability means no handoff entry is created; independent journaling remains available.
+
+**Intermediate reports are non-consuming and chat-only:** no artifacts, new entries, sequence allocation, storage mutations, pointer updates, cutoff or last-summarization changes, tags/status/reminder changes, ledger writes, or sources marked summarized/consumed/complete. They may cite Entry 10 and source IDs/dates, source-record revisions, and exact attributed quotes without creating Entry 11 or consuming anything. Voice uncertainty remains visible.
+
+See the [workflow](plugins/mood-journal/skills/mood-journal/references/handoffs.md) and [field schema and adapter contract](plugins/mood-journal/skills/mood-journal/references/handoff-entry-schema.md). The optional deterministic helper and fictional tests exercise schema, lineage, and verification gates; they do not certify live conversational compliance or backend permissions. Python is not required for native skill use.
 
 ## Single-agent chat operation
 
 This release is for direct interaction with one primary assistant. It performs the conversation, historical import, handoff preparation, verification, and all saves itself. Sub-agents, delegated read-only review, cross-chat task dispatch, and autonomous background agent work are unsupported. Direct tool calls and deterministic helpers remain available. Approved automatic import runs during the active chat.
 
-This is a skill behavior rule, not a plugin permission that disables host agent tools or globally locks other chats. Sequential cross-device use remains supported. Ordinary revision checks, highest-handoff-version discovery, and safe retries remain necessary even with one agent. No multi-agent infrastructure or lock service is required. Future narrowly scoped delegation is a separate development consideration, not an enabled mode.
+This is a skill behavior rule, not a plugin permission that disables host agent tools or globally locks other chats. Sequential cross-device use remains supported. Ordinary revision checks, latest-handoff-entry resolution, and safe retries remain necessary even with one agent. No multi-agent infrastructure or lock service is required. Future narrowly scoped delegation is a separate development consideration, not an enabled mode.

@@ -1,9 +1,7 @@
 import datetime as dt
 import importlib.util
-import json
 from pathlib import Path
 import shutil
-import subprocess
 import tempfile
 import unittest
 import zipfile
@@ -70,6 +68,8 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn('plugin.json',z.namelist());self.assertNotIn('.codex-plugin/plugin.json',z.namelist())
             self.assertIn('assets/example-prompts.png',z.namelist())
             self.assertIn('skills/mood-journal/scripts/ingest_chats.py',z.namelist())
+            self.assertIn('skills/mood-journal/references/handoff-entry-schema.md',z.namelist())
+            self.assertIn('skills/mood-journal/scripts/select_handoff.py',z.namelist())
         with zipfile.ZipFile(next(a.glob('*-skills.zip'))) as z:
             self.assertIn('mood-journal/SKILL.md',z.namelist());self.assertIn('mood-journal/NOTICE.md',z.namelist())
         with zipfile.ZipFile(next(a.glob('*-submission-kit.zip'))) as z:
